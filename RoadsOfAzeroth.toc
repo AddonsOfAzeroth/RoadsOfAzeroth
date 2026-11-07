@@ -1,0 +1,24 @@
+## Interface: 16001
+## Title: Roads of Azeroth
+## Notes: Quest tracker with a smart quest route, GPS with flight paths, a navigation arrow and the route on the world map.
+## Notes-nlNL: Questlijst met een slimme questroute, GPS met vliegroutes, een navigatiepijl en de route op de wereldkaart.
+## Author: DinX
+## Version: 0.1.0
+## IconTexture: Interface\Icons\INV_Misc_Map_01
+## SavedVariables: RoadsOfAzerothDB
+## SavedVariablesPerCharacter: RoadsOfAzerothCharDB
+## OptionalDeps: CastersOfAzeroth, CasterKit, Questie
+
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+
+Core.lua
+Locale.lua
+Style.lua
+Arrow.lua
+QuestPlan.lua
+Nav.lua
+Quests.lua
+Map.lua
+API.lua
+Config.lua

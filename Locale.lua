@@ -1,0 +1,581 @@
+-- Roads of Azeroth by DinX: translations. Code uses English strings as keys: L["Text"].
+local _, ns = ...
+local RoA = ns.RoA
+
+RoA.languages = { { "enUS", "English" }, { "nlNL", "Nederlands" } }
+
+local NL = {}
+RoA.translations = { nlNL = NL }
+
+-- Looked up at use time, so the saved language (loaded later) applies.
+RoA.L = setmetatable({}, {
+	__index = function(_, key)
+		local lang = RoA.db and RoA.db.language or "auto"
+		if lang == "auto" then -- follow Casters of Azeroth, else English
+			local c = RoA.Casters and RoA:Casters()
+			lang = (c and c.db and c.db.language) or "enUS"
+		end
+		if key == "decimal" then return lang == "nlNL" and "," or "." end
+		if key == "thousands" then return lang == "nlNL" and "." or "," end
+		local t = RoA.translations[lang]
+		return t and t[key] or key
+	end,
+})
+
+-- Dutch
+local function add(t)
+	for k, v in pairs(t) do NL[k] = v end
+end
+RoA.AddTranslations = add
+
+add({
+	["%dh%02d"] = "%du%02d",
+	["Keybind mode"] = "Keybind-modus",
+	["Shift-click: keybind mode"] = "Shift-klik: keybind-modus",
+	["Hover a button and press a key (Shift, Alt, Ctrl work too). Or use the Blizzard key bindings: row 1 = Action Bar, row 2 = Bottom Left, row 3 = Bottom Right, row 4 = Right."] = "Ga met de muis over een knop en druk een toets (ook met Shift, Alt, Ctrl). Of gebruik de Blizzard-sneltoetsen: rij 1 = Action Bar, rij 2 = Bottom Left, rij 3 = Bottom Right, rij 4 = Right.",
+	["%d free bag slots left."] = "Nog %d vrije plaatsen in je tassen.",
+	["%d talent point(s) available. Click to open your talents."] = "%d talentpunt(en) vrij. Klik om je talenten te openen.",
+	["%s XP/h"] = "%s XP/u",
+	["%s already manages the action bars. CasterKit bars are off; the rotation helper still lights up those buttons. Type /ck for settings."] = "%s beheert al de actiebalken. CasterKit-balken staan uit; de rotatiehulp licht wel op op die knoppen. Typ /ck voor instellingen.",
+	[", solo value"] = ", solo-waarde",
+	["/ck  settings\n/ck unlock  and  /ck lock  drag frames\n/ck aoe  toggle AoE mode\n/ck reset  reset positions"] = "/ck  instellingen\n/ck unlock  en  /ck lock  kaders verslepen\n/ck aoe  AoE-modus wisselen\n/ck reset  posities terugzetten",
+	["A caster interface for WoW Forever: all action bars in one frame, a rotation helper that lights up the right button, and leveling helpers."] = "Een caster-interface voor WoW Forever: alle actiebalken in één kader, een rotatiehulp die de juiste knop laat oplichten, en hulpjes voor het levelen.",
+	["About"] = "Over",
+	["Action bars"] = "Actiebalken",
+	["Also show the next spell (faint border)"] = "Volgende spreuk ook tonen (zwakke rand)",
+	["Also via /ck aoe, middle-click on the minimap button or your own key binding."] = "Ook via /ck aoe, middelklik op de minimapknop of een eigen sneltoets.",
+	["AoE mode (multiple enemies)"] = "AoE-modus (meerdere vijanden)",
+	["AoE mode off (single target)."] = "AoE-modus uit (één doelwit).",
+	["AoE mode on."] = "AoE-modus aan.",
+	["Arcane Intellect is missing."] = "Arcane Intellect ontbreekt.",
+	["At a vendor"] = "Bij een verkoper",
+	["Background behind the bars"] = "Achtergrond achter de balken",
+	["Bags in the same panel"] = "Tassen in hetzelfde paneel",
+	["Blizzard glow"] = "Blizzard-glinster",
+	["Button size"] = "Knopgrootte",
+	["Buttons per row"] = "Knoppen per rij",
+	["Cast bar"] = "Castbar",
+	["CasterKit bars: drag me\n/ck lock to lock"] = "CasterKit-balken: sleep mij\n/ck lock om te vergrendelen",
+	["CasterKit chat (IRC style)"] = "CasterKit-chat (IRC-stijl)",
+	["CasterKit only shows which button to press. You press it yourself: nothing is ever cast automatically."] = "CasterKit toont alleen welke knop je best indrukt. Jij drukt zelf: er wordt nooit iets automatisch gecast.",
+	["CasterKit only uses the official addon API. It shows information and lights up buttons, but never casts anything itself, never sends chat messages and does not work with external programs."] = "CasterKit gebruikt alleen de officiële addon-API. Het toont informatie en laat knoppen oplichten, maar cast nooit zelf iets, verstuurt geen chatberichten en werkt niet samen met externe programma's.",
+	["Character, spellbook, talents, quests… tidy in one panel."] = "Personage, spreukenboek, talenten, quests… netjes in één kader.",
+	["Class color on the health bar"] = "Klassekleur op de levensbalk",
+	["Click: "] = "Klik: ",
+	["Click: settings"] = "Klik: instellingen",
+	["Colors: gold = press now, purple = proc (e.g. Fingers of Frost), blue = defensive (falling, rooted, too close)."] = "Kleuren: goud = nu indrukken, paars = proc (bv. Fingers of Frost), blauw = defensief (vallen, vastzitten, te dichtbij).",
+	["Commands"] = "Commando's",
+	["Conjured food: %d. Click to conjure more."] = "Conjured food: %d. Klik om bij te maken.",
+	["Conjured water: %d. Click to conjure more."] = "Conjured water: %d. Klik om bij te maken.",
+	["Current"] = "Huidig",
+	["Dead"] = "Dood",
+	["Eat and drink: click to use your conjured food and water."] = "Eten en drinken: klik om je conjured food en water te gebruiken.",
+	["ElvUI (action bars)"] = "ElvUI (actiebalken)",
+	["Experience"] = "Ervaring",
+	["Fade tabs until you hover them"] = "Tabbladen vervagen tot je eroverheen gaat",
+	["Failed"] = "Mislukt",
+	["Font size"] = "Lettergrootte",
+	["Frames locked"] = "Kaders vergrendeld",
+	["Frames locked."] = "Kaders vergrendeld.",
+	["Frames unlocked: drag them where you like, type /ck lock when done."] = "Kaders ontgrendeld: sleep ze waar je wil, typ /ck lock als je klaar bent.",
+	["General"] = "Algemeen",
+	["General, Guild, Whisper, Trade, LFG, Combat. Asked once."] = "Algemeen, Gilde, Fluister, Handel, LFG, Gevecht. Wordt één keer gevraagd.",
+	["Ghost"] = "Geest",
+	["Height"] = "Hoogte",
+	["Hidden Blizzard frames only come back after a reload. Unlock the frames (General) to drag them."] = "Blizzard-frames die verborgen zijn, komen pas terug na een herlaad. Ontgrendel de kaders (Algemeen) om frames te verslepen.",
+	["Hide Blizzard XP bar"] = "Blizzard-XP-balk verbergen",
+	["Hide Blizzard bars"] = "Blizzard-balken verbergen",
+	["Hide Blizzard cast bar"] = "Blizzard-castbar verbergen",
+	["Hides the default bars that CasterKit replaces."] = "Verbergt de standaardbalken die CasterKit vervangt.",
+	["Hint box above the bars"] = "Hintblokje boven de balken",
+	["In combat Blizzard hides many values from addons. Blizzard's own suggestion always works; the own priority falls back to Blizzard when something is hidden."] = "Blizzard schermt in gevechten veel waarden af voor addons. De suggestie van Blizzard zelf werkt altijd; de eigen prioriteit valt terug op Blizzard als iets afgeschermd is.",
+	["Interrupted"] = "Onderbroken",
+	["Kills to level in enemy tooltips"] = "Kills tot level in de tooltip van vijanden",
+	["Language"] = "Taal",
+	["Level %d: new spells are waiting at your trainer."] = "Level %d: er zijn nieuwe spreuken bij je trainer.",
+	["Level %d: new spells at your trainer!"] = "Level %d: nieuwe spreuken bij je trainer!",
+	["Leveling"] = "Levelen",
+	["Light up buttons"] = "Knoppen laten oplichten",
+	["Main bar (1 to =) on top"] = "Hoofdbalk (1 t/m =) bovenaan",
+	["Micro menu"] = "Micromenu",
+	["Micro menu and bags"] = "Micromenu en tassen",
+	["Micro menu in a CasterKit panel"] = "Micromenu in een CasterKit-paneel",
+	["Middle-click: AoE mode"] = "Middelklik: AoE-modus",
+	["Names in class color"] = "Namen in klassekleur",
+	["No armor buff active."] = "Geen armor-buff actief.",
+	["No longer gives XP"] = "Geeft geen XP meer",
+	["No mana gem in your bags."] = "Geen mana gem in je tassen.",
+	["No other action bar addon active."] = "Geen andere actiebalk-addon actief.",
+	["Notify: new spells at the trainer"] = "Melding: nieuwe spreuken bij de trainer",
+	["Notify: talent points available"] = "Melding: talentpunten vrij",
+	["One tab per channel"] = "Tabblad per kanaal",
+	["Only with a hostile target"] = "Alleen bij een vijandig doelwit",
+	["Open CasterKit settings"] = "Open CasterKit-instellingen",
+	["Open settings"] = "Open instellingen",
+	["Orange = interruptible (Counterspell), grey with lock = not."] = "Oranje = onderbreekbaar (Counterspell), grijs met slot = niet.",
+	["Own cast bar"] = "Eigen castbar",
+	["Own priority (guide)"] = "Eigen prioriteit (guide)",
+	["Party"] = "Groep",
+	["Player"] = "Speler",
+	["Positions and bar settings reset."] = "Posities en balkinstellingen teruggezet.",
+	["Pulsing border"] = "Pulserende rand",
+	["Reload UI"] = "Interface herladen",
+	["Reload the UI to apply the language everywhere."] = "Herlaad de interface om de taal overal toe te passen.",
+	["Font"] = "Lettertype",
+	["Game font"] = "Lettertype van het spel",
+	["Thick outline on text"] = "Dikke rand rond tekst",
+	["Off: clean text with a soft shadow, easier to read."] = "Uit: strakke tekst met een zachte schaduw, leest makkelijker.",
+	["Reload the UI to apply the font."] = "Herlaad de interface om het lettertype toe te passen.",
+	["Reload your UI (/reload) to see the Blizzard cast bar again."] = "Herlaad je UI (/reload) om de Blizzard-castbar terug te zien.",
+	["Reminders (water, food, buffs, bags…)"] = "Herinneringen (water, food, buffs, tassen…)",
+	["Repair automatically"] = "Automatisch herstellen",
+	["Repaired your gear for %s."] = "Uitrusting hersteld voor %s.",
+	["Replaces Blizzard's player, target and party frames."] = "Vervangt de speler-, doelwit- en groepsframes van Blizzard.",
+	["Reset positions"] = "Posities terugzetten",
+	["Right-click: lock/unlock frames"] = "Rechtsklik: kaders (ont)grendelen",
+	["Rotation"] = "Rotatie",
+	["Rotation for"] = "Rotatie voor",
+	["Rotation helper"] = "Rotatiehulp",
+	["Rotation helper on"] = "Rotatiehulp aan",
+	["Rotation: "] = "Rotatie: ",
+	["Rows"] = "Aantal rijen",
+	["Scale"] = "Schaal",
+	["Sell grey items automatically"] = "Grijze items automatisch verkopen",
+	["Set key bindings in the normal Blizzard menu (Keybindings). Row 1 = Action Bar, row 2 = Bottom Left, row 3 = Bottom Right, row 4 = Right."] = "Sneltoetsen stel je in via het gewone Blizzard-menu (Toetsenbord). Rij 1 = Action Bar, rij 2 = Bottom Left, rij 3 = Bottom Right, rij 4 = Right.",
+	["Short channel names ([T], [G], [g]…)"] = "Korte kanaalnamen ([T], [G], [g]…)",
+	["Show latency at the end"] = "Latency tonen aan het einde",
+	["Show minimap button"] = "Minimapknop tonen",
+	["Sold %d grey item(s) for %s."] = "%d grijze item(s) verkocht voor %s.",
+	["Spacing"] = "Tussenruimte",
+	["Start over"] = "Opnieuw beginnen",
+	["Still needed"] = "Nog nodig",
+	["Style"] = "Stijl",
+	["Suggestion source"] = "Bron van de suggestie",
+	["Target"] = "Doelwit",
+	["Target (with your debuffs)"] = "Doelwit (met jouw debuffs)",
+	["Target cast bar"] = "Doelwit-castbar",
+	["The red part: from there you can already press your next spell."] = "Het rode stuk: vanaf daar mag je je volgende spreuk al indrukken.",
+	["There is no rotation for your class yet. Bars and leveling helpers still work."] = "Voor jouw class is er nog geen rotatie. De balken en levelhulpjes werken wel.",
+	["This session"] = "Deze sessie",
+	["Timestamps [14:03]"] = "Tijdstempels [14:03]",
+	["Tip: the innkeeper now sells %s, better than your own Conjure Water until your next rank."] = "Tip: vanaf nu verkoopt de innkeeper %s, beter dan je eigen Conjure Water tot je volgende rank.",
+	["Toggle AoE mode"] = "Wissel AoE-modus",
+	["Turn off to drag the bars, hint box, frames and micro menu."] = "Zet uit om de balken, het hintblokje en het micromenu te verslepen.",
+	["Turning this off needs a reload to give the Blizzard bars back."] = "Uitzetten vraagt een herlaad om de Blizzard-balken terug te geven.",
+	["Unlock the frames (General) to drag the panel."] = "Ontgrendel de kaders (Algemeen) om het paneel te verslepen.",
+	["Use CasterKit action bars"] = "CasterKit-actiebalken gebruiken",
+	["Use CasterKit frames"] = "CasterKit-frames gebruiken",
+	["Version %s, made by DinX."] = "Versie %s, gemaakt door DinX.",
+	["Width"] = "Breedte",
+	["With the number of free slots on your backpack."] = "Met het aantal vrije plaatsen op je rugzak.",
+	["Within the rules"] = "Binnen de regels",
+	["XP bar with XP per hour and time to level"] = "XP-balk met XP per uur en tijd tot level",
+	["Your gear is worn. Repair at a vendor."] = "Je uitrusting is versleten. Laat herstellen bij een verkoper.",
+	["estimated"] = "geschat",
+	["measured"] = "gemeten",
+	["off"] = "uit",
+	["on"] = "aan",
+	["|cffff5050%s currently manages the action bars.|r Disable it to use the CasterKit bars; meanwhile the rotation helper works on those buttons."] = "|cffff5050%s beheert nu de actiebalken.|r Zet dat uit om de CasterKit-balken te gebruiken; de rotatiehulp werkt intussen op die knoppen.",
+	["±%d kills to level %d (%s%s)"] = "±%d kills tot level %d (%s%s)",
+})
+
+add({
+	["Hover a button and press a key. Shift, Alt and Ctrl work too. Delete clears. Esc to finish."] = "Ga met de muis over een knop en druk een toets. Shift, Alt en Ctrl werken ook. Delete wist. Esc om te stoppen.",
+	["Save for this character only"] = "Alleen voor dit personage opslaan",
+	["Done"] = "Klaar",
+	["Mouse buttons 4/5, middle click and the mouse wheel work too."] = "Muisknoppen 4/5, middelste klik en het muiswiel werken ook.",
+	["Keys: %s"] = "Toetsen: %s",
+	["No key bound"] = "Geen toets ingesteld",
+	["%s is already bound to %s."] = "%s is al gekoppeld aan %s.",
+	["Could not bind %s."] = "Kon %s niet koppelen.",
+	["%s replaced: %s"] = "%s vervangen: %s",
+	["%s bound to %s."] = "%s gekoppeld aan %s.",
+	["Keys cleared: %s"] = "Toetsen gewist: %s",
+	["Keybind mode is not available in combat."] = "Keybind-modus is niet beschikbaar in gevecht.",
+	["No CasterKit action buttons to bind."] = "Geen CasterKit-actieknoppen om te koppelen.",
+	["Keybind mode closed: you entered combat."] = "Keybind-modus gesloten: je bent in gevecht.",
+})
+
+add({
+})
+
+add({
+	["Tooltips"] = "Tooltips",
+	["Show tooltips at a fixed spot"] = "Tooltips op een vaste plek tonen",
+	["Spell explanations and unit info appear in a corner instead of over your screen. Unlock the frames to move the spot."] = "Uitleg van spreuken en info over personages komt in een hoek in plaats van over je beeld. Ontgrendel de kaders om de plek te verplaatsen.",
+	["No action bar tooltips in combat"] = "Geen tooltips van actieknoppen in gevecht",
+	["Guild"] = "Gilde",
+	["Whisper"] = "Fluister",
+	["Trade"] = "Handel",
+	["Copy chat"] = "Kopieer chat",
+	["Shows the last 100 lines of this tab, ready to copy."] = "Toont de laatste 100 regels van dit tabblad, klaar om te kopiëren.",
+	["Select all with Ctrl+A, copy with Ctrl+C."] = "Alles selecteren met Ctrl+A, kopiëren met Ctrl+C.",
+	["%d protected lines were left out."] = "%d beschermde regels zijn weggelaten.",
+	["Press Enter to chat"] = "Druk op Enter om te chatten",
+	["Scroll to the bottom"] = "Naar de nieuwste regel",
+	["CasterKit will set up your chat with one tab per channel. Continue?"] = "CasterKit zet je chat op met een tabblad per kanaal. Doorgaan?",
+	["Chat tabs are set up."] = "Chattabbladen zijn ingesteld.",
+	["No free chat window left for more tabs."] = "Geen vrij chatvenster meer voor extra tabbladen.",
+	["%s already manages the chat; the CasterKit chat stays off."] = "%s beheert de chat al; de CasterKit-chat blijft uit.",
+	["Turning the chat off takes effect after /reload."] = "De chat uitschakelen werkt pas na /reload.",
+})
+
+add({
+	["Profiles"] = "Profielen",
+	["Save the settings of this character under a name and use them on your alts. Personal things (spec, measured XP, chat setup) stay with each character."] = "Bewaar de instellingen van dit personage onder een naam en gebruik ze op je alts. Persoonlijke dingen (spec, gemeten XP, chat-setup) blijven bij elk personage.",
+	["Current profile: %s"] = "Huidig profiel: %s",
+	["none"] = "geen",
+	["Save"] = "Bewaren",
+	["Profile name"] = "Naam van het profiel",
+	["Save current settings"] = "Huidige instellingen bewaren",
+	["Profile saved: %s"] = "Profiel bewaard: %s",
+	["Use a profile"] = "Een profiel gebruiken",
+	["Profile"] = "Profiel",
+	["Load into this character"] = "Laden op dit personage",
+	["Profile loaded: %s. Reloading the UI…"] = "Profiel geladen: %s. De interface wordt herladen…",
+	["Delete"] = "Verwijderen",
+	["Use this profile for new characters"] = "Dit profiel gebruiken voor nieuwe personages",
+	["A new alt starts with these settings at its first login."] = "Een nieuwe alt begint met deze instellingen bij de eerste login.",
+})
+
+add({
+	["Conjured water: %d"] = "Conjured water: %d",
+	["Conjured food: %d"] = "Conjured food: %d",
+	["Mana gem"] = "Mana gem",
+	["Left-click: use %s"] = "Linksklik: %s gebruiken",
+	["Right-click: "] = "Rechtsklik: ",
+})
+
+add({
+	["Dampen Magic is missing (solo: less magic damage taken)."] = "Dampen Magic ontbreekt (solo: minder magische schade).",
+})
+
+add({
+	["Buff buttons"] = "Buffknopjes",
+	["Always, with timer"] = "Altijd, met timer",
+	["Only when missing or running low"] = "Enkel als ze ontbreken of bijna op zijn",
+	["Running low below"] = "Bijna op onder",
+	["%d min"] = "%d min",
+})
+
+add({
+	["Armor (Frost, Ice or Mage Armor)"] = "Armor (Frost, Ice of Mage Armor)",
+	["Dampen Magic (solo only)"] = "Dampen Magic (enkel solo)",
+})
+
+add({
+	["Quests"] = "Quests",
+	["CasterKit quest tracker"] = "CasterKit-questtracker",
+	["A compact list: level colours, progress bars, turn-ins on top."] = "Een compacte lijst: kleuren per level, voortgangsbalkjes, inleveren bovenaan.",
+	["Hide the Blizzard quest tracker"] = "Blizzard-questtracker verbergen",
+	["Hide the Questie tracker (Questie keeps its map pins)"] = "Questie-tracker verbergen (Questie houdt zijn kaartpins)",
+	["Quests in your current zone first"] = "Quests in je huidige zone eerst",
+	["Hide finished objectives"] = "Afgewerkte doelen verbergen",
+	["Quests shown"] = "Aantal quests",
+	["Click a quest title to select it: the arrow points to it (click again for the route). Right-click folds it open or closed. Click the lines under it (or Shift-click the title) to open it in the quest log. Unlock the frames (General) to move the list."] = "Klik op een questtitel om hem te selecteren: de pijl wijst ernaar (nog eens klikken voor de route). Rechtsklik klapt hem open of dicht. Klik op de regels eronder (of Shift-klik op de titel) om hem in het questlog te openen. Ontgrendel de kaders (Algemeen) om de lijst te verplaatsen.",
+})
+
+add({
+	["Buff buttons next to party members"] = "Buffknopjes naast groepsleden",
+	["Buffs you can give, e.g. Arcane Intellect. Red = missing, click = cast on that member."] = "Buffs die jij kunt geven, bv. Arcane Intellect. Rood = ontbreekt, klik = op dat groepslid casten.",
+	["Click: cast on %s"] = "Klik: casten op %s",
+})
+
+add({
+	["Group"] = "Groep",
+	["Ready to turn in"] = "Klaar om in te leveren",
+	["Type /reload to bring back the other quest trackers."] = "Typ /reload om de andere questtrackers terug te halen.",
+})
+
+add({
+	["Sort by"] = "Sorteren op",
+	["Smart route (fastest leveling)"] = "Slimme route (snelst levelen)",
+	["Distance"] = "Afstand",
+	["XP reward"] = "XP-beloning",
+	["XP per minute"] = "XP per minuut",
+	["Level"] = "Level",
+	["Almost done"] = "Bijna klaar",
+	["Zone"] = "Zone",
+	["Show time and XP per hour estimates"] = "Geschatte tijd en XP per uur tonen",
+	["Estimates get better as CasterKit learns your kill speed and drop rates."] = "De schattingen worden beter naarmate CasterKit je killtempo en drop-kansen leert.",
+})
+
+add({
+	["Arrow to the next stop"] = "Pijl naar de volgende stop",
+	["CasterKit's own navigation arrow. Unlock the frames to move it."] = "De eigen navigatiepijl van CasterKit. Ontgrendel de kaders om hem te verplaatsen.",
+	["Map"] = "Kaart",
+	["World map"] = "Wereldkaart",
+	["CasterKit map upgrade"] = "CasterKit-kaartupgrade",
+	["Show the quest route on the map"] = "Questroute op de kaart tonen",
+	["Numbered stops in the fastest order, with lines between them."] = "Genummerde stops in de snelste volgorde, met lijnen ertussen.",
+	["Coordinates (player and cursor)"] = "Coördinaten (speler en cursor)",
+	["Fade the map while moving"] = "Kaart doorzichtig tijdens het lopen",
+	["Opacity while moving"] = "Dekking tijdens het lopen",
+	["Map size"] = "Kaartgrootte",
+	["Navigation arrow"] = "Navigatiepijl",
+	["Use the arrow"] = "CasterKit-pijl gebruiken",
+	["Arrow size"] = "Pijlgrootte",
+	["Arrived within"] = "Aangekomen binnen",
+})
+
+add({
+	["Arrived"] = "Aangekomen",
+	["Other zone"] = "Andere zone",
+	["Right-click to clear"] = "Rechtsklik om te wissen",
+})
+
+add({
+	["Smart route"] = "Slimme route",
+	["Skip?"] = "Overslaan?",
+	["Gives little XP at your level."] = "Geeft weinig XP op jouw level.",
+	["Group or elite quest: hard solo."] = "Groeps- of elitequest: moeilijk alleen.",
+	["Far away or on another continent."] = "Ver weg of op een ander continent.",
+	["Much higher level: come back later."] = "Veel hoger level: kom later terug.",
+	["Click to change the sort order."] = "Klik om de sorteervolgorde te wijzigen.",
+	["Next stop"] = "Volgende stop",
+})
+
+add({
+	["Low level, little XP"] = "Laag level, weinig XP",
+	["Group quest"] = "Groepsquest",
+	["Level too high"] = "Level te hoog",
+	["Far away"] = "Ver weg",
+})
+
+add({
+	["Coordinates"] = "Coördinaten",
+	["Coordinates on the minimap"] = "Coördinaten op de minimap",
+	["Unlock the frames to move them."] = "Ontgrendel de kaders om ze te verplaatsen.",
+})
+
+add({
+	["Automatic AoE with 3+ enemies close by"] = "Automatisch AoE bij 3+ vijanden dichtbij",
+	["Counts enemies within about 10 yards from their nameplates. Turn enemy nameplates on (V)."] = "Telt vijanden binnen ongeveer 10 yards via hun naamplaatjes. Zet vijandelijke naamplaatjes aan (V).",
+})
+
+add({
+	["Flat map frame"] = "Vlak kaartvenster",
+	["Hides Blizzard's frame art (borders, title bar, portrait)."] = "Verbergt Blizzards kaderversiering (randen, titelbalk, portret).",
+})
+
+add({
+	["Bags"] = "Tassen",
+	["New"] = "Nieuw",
+	["Equipment"] = "Uitrusting",
+	["Consumables"] = "Verbruiksgoederen",
+	["Trade Goods"] = "Handelswaar",
+	["Quest"] = "Quest",
+	["Reagents/Other"] = "Reagentia/Overig",
+	["Junk"] = "Rommel",
+	["Free slots"] = "Vrije plaatsen",
+	["Backpack"] = "Rugzak",
+	["Reagent bag"] = "Reagentiatas",
+	["Bag %d"] = "Tas %d",
+	["Marked as junk: the Sell junk button sells it."] = "Gemarkeerd als rommel: de knop Rommel verkopen verkoopt het.",
+	["Alt-click: no longer junk"] = "Alt-klik: geen rommel meer",
+	["Alt-click: mark as junk"] = "Alt-klik: markeren als rommel",
+	["%d free"] = "%d vrij",
+	["reagents %d"] = "reagentia %d",
+	["%s is no longer junk."] = "%s is geen rommel meer.",
+	["%s marked as junk."] = "%s gemarkeerd als rommel.",
+	["Sold %d junk item(s) for %s."] = "%d stuk(s) rommel verkocht voor %s.",
+	["This client has no bag menu."] = "Deze client heeft geen tasmenu.",
+	["Assign to"] = "Toewijzen aan",
+	["Nothing"] = "Niets",
+	["Ignore when sorting"] = "Overslaan bij sorteren",
+	["Empty bag slot"] = "Lege tasplaats",
+	["Assigned to: %s"] = "Toegewezen aan: %s",
+	["Ignored when sorting"] = "Wordt overgeslagen bij sorteren",
+	["Right-click: choose what goes in this bag"] = "Rechtsklik: kies wat in deze tas komt",
+	["Bag slots"] = "Tasplaatsen",
+	["Show your bags. Right-click a bag to choose what goes in it."] = "Toont je tassen. Rechtsklik op een tas om te kiezen wat erin komt.",
+	["View: by bag"] = "Weergave: per tas",
+	["View: by category"] = "Weergave: per categorie",
+	["Click to switch."] = "Klik om te wisselen.",
+	["Sell junk"] = "Rommel verkopen",
+	["Grey items and items you marked as junk (Alt-click)."] = "Grijze voorwerpen en voorwerpen die je als rommel markeerde (Alt-klik).",
+	["%d item(s), worth %s"] = "%d voorwerp(en), waarde %s",
+	["Open a merchant first."] = "Open eerst een verkoper.",
+	["Sort bags"] = "Tassen sorteren",
+	["Blizzard's own clean-up. Right-click a bag slot to keep a bag out of it."] = "Blizzards eigen opruimfunctie. Rechtsklik op een tasplaats om een tas over te slaan.",
+	["Not in combat."] = "Niet tijdens een gevecht.",
+	["Search"] = "Zoeken",
+	["CasterKit bags (one window for all bags)"] = "CasterKit-tassen (één venster voor alle tassen)",
+	["Replaces Blizzard's bags. Turning this off gives them back right away."] = "Vervangt de tassen van Blizzard. Uitzetten geeft ze meteen terug.",
+	["View"] = "Weergave",
+	["By category"] = "Per categorie",
+	["By bag"] = "Per tas",
+	["Columns"] = "Kolommen",
+	["Icon size"] = "Grootte van de iconen",
+	["Item level on gear"] = "Itemlevel op uitrusting",
+	["Glow on new items"] = "Nieuwe voorwerpen laten oplichten",
+	["New items also get their own section until you close your bags."] = "Nieuwe voorwerpen krijgen ook een eigen groep tot je je tassen sluit.",
+	["Open the bags at a vendor"] = "Tassen openen bij een verkoper",
+	["Alt-click an item to mark it as junk (or unmark it). At a vendor the Sell junk button sells grey items and your marked items, a few at a time. Right-click a bag slot (bag button at the top) to choose what goes in that bag."] = "Alt-klik op een voorwerp om het als rommel te markeren (of terug niet). Bij een verkoper verkoopt de knop Rommel verkopen grijze voorwerpen en je gemarkeerde voorwerpen, een paar tegelijk. Rechtsklik op een tasplaats (tasknop bovenaan) om te kiezen wat in die tas komt.",
+	["Clear junk list"] = "Rommellijst wissen",
+	["Junk list cleared."] = "Rommellijst gewist.",
+	["Unlock the frames (General) to drag the bag window."] = "Ontgrendel de kaders (Algemeen) om het tassenvenster te verslepen.",
+})
+
+add({
+	["Loot"] = "Buit",
+	["Loot all"] = "Alles oprapen",
+	["Loot window"] = "Buitvenster",
+	["Loot feed"] = "Buitlijst",
+	["Loot rolls"] = "Dobbelen om buit",
+	["Bags full!"] = "Tassen vol!",
+	["CasterKit loot module"] = "CasterKit-buitmodule",
+	["Replace the loot window"] = "Buitvenster vervangen",
+	["A compact list: click an item to loot it, or use Loot all. With master loot Blizzard's window is used."] = "Een compacte lijst: klik op een voorwerp om het op te rapen, of gebruik Alles oprapen. Bij master loot wordt het Blizzard-venster gebruikt.",
+	["Open the loot window at the cursor"] = "Buitvenster bij de muisaanwijzer openen",
+	["Off: at a fixed spot. Unlock the frames to move it."] = "Uit: op een vaste plek. Ontgrendel de kaders om het te verplaatsen.",
+	["Auto loot (Blizzard setting)"] = "Automatisch oprapen (Blizzard-instelling)",
+	["Blizzard's own auto loot: everything is picked up when you open a corpse. Applied after combat."] = "Blizzards eigen automatisch oprapen: alles wordt opgeraapt wanneer je een lijk opent. Toegepast na het gevecht.",
+	["Show what you receive"] = "Tonen wat je ontvangt",
+	["Items, money and currency with your new bag total. Each line fades out after a few seconds."] = "Voorwerpen, geld en munteenheden met je nieuwe totaal in de tassen. Elke regel vervaagt na enkele seconden.",
+	["Show money"] = "Geld tonen",
+	["Show quest items"] = "Questvoorwerpen tonen",
+	["Warn when your bags are full"] = "Waarschuwen als je tassen vol zijn",
+	["Seconds per line"] = "Seconden per regel",
+	["Lines"] = "Regels",
+	["Group loot"] = "Groepsbuit",
+	["Compact roll frames"] = "Compacte dobbelkaders",
+	["Need, Greed, Transmog and Pass with a timer bar. You always choose yourself; Blizzard still asks to confirm Bind on Pickup."] = "Need, Greed, Transmog en Pass met een tijdbalk. Je kiest altijd zelf; Blizzard vraagt nog steeds bevestiging bij Bind on Pickup.",
+	["Unlock the frames (/ck unlock) to move the loot window, feed and roll frames."] = "Ontgrendel de kaders (/ck unlock) om het buitvenster, de buitlijst en de dobbelkaders te verplaatsen.",
+})
+
+add({
+	["Click: disenchant"] = "Klik: disenchanten",
+	["Disenchant mode"] = "Disenchant-modus",
+	["Highlights what you can disenchant. Click an item to disenchant it, one per click."] = "Licht op wat je kunt disenchanten. Klik op een item om het te disenchanten, één per klik.",
+})
+
+add({
+	["Skin changes apply after a reload (/reload)."] = "Wijzigingen aan de skins gelden na herladen (/reload).",
+	["Skins"] = "Skins",
+	["Windows"] = "Vensters",
+	["Gives Blizzard's windows the CasterKit look: flat dark panels, thin borders and the accent colour instead of the gold and stone frame art. Only the look changes."] = "Geeft de vensters van Blizzard de CasterKit-stijl: vlakke donkere panelen, dunne randen en de accentkleur in plaats van de gouden en stenen kaders. Alleen het uiterlijk verandert.",
+	["Skin Blizzard windows"] = "Blizzard-vensters stylen",
+	["Turning a skin off needs a reload (/reload)."] = "Een skin uitzetten vraagt een herlaadbeurt (/reload).",
+	["Character, reputation and currency"] = "Personage, reputatie en munten",
+	["Spellbook and talents"] = "Spreukenboek en talenten",
+	["Quest and gossip windows"] = "Quest- en gespreksvensters",
+	["The parchment behind quest text stays, so the text remains readable."] = "Het perkament achter questtekst blijft, zodat de tekst leesbaar blijft.",
+	["Vendor"] = "Handelaar",
+	["Mailbox"] = "Brievenbus",
+	["Class trainer"] = "Klassetrainer",
+	["Friends, who and raid"] = "Vrienden, wie en raid",
+	["Game menu, addon list and settings"] = "Spelmenu, addonlijst en instellingen",
+	["Pop-up dialogs"] = "Pop-upvensters",
+	["Other windows (bank, trade, dressing room, group finder…)"] = "Andere vensters (bank, handel, paskamer, groepzoeker…)",
+	["ElvUI skins Blizzard's windows itself: CasterKit leaves those windows to ElvUI. Turn off ElvUI's Blizzard skins to use these."] = "ElvUI stylet de Blizzard-vensters zelf: CasterKit laat die vensters aan ElvUI. Zet de Blizzard-skins van ElvUI uit om deze te gebruiken.",
+	["Changes apply after a reload (/reload)."] = "Wijzigingen gelden na herladen (/reload).",
+})
+
+add({
+	["%d s"] = "%d s",
+	["%d stops"] = "%d stops",
+	["+ other continent"] = "+ ander continent",
+	["+%d more"] = "+%d meer",
+	["Added to route: %s (#%d)"] = "Toegevoegd aan de route: %s (#%d)",
+	["Already in the route: %s"] = "Staat al in de route: %s",
+	["Cannot place a stop on this map."] = "Op deze kaart kan geen stop geplaatst worden.",
+	["Clear"] = "Wissen",
+	["Clear route"] = "Route wissen",
+	["Ctrl-click the map to add a stop."] = "Ctrl-klik op de kaart om een stop toe te voegen.",
+	["Ctrl-click the world map or a quest title to add stops."] = "Ctrl-klik op de wereldkaart of een questtitel om stops toe te voegen.",
+	["Direction"] = "Richting",
+	["Flight"] = "Vlucht",
+	["Fly from %s to %s (saves ~%s)"] = "Vlieg van %s naar %s (bespaart ~%s)",
+	["Follow quest route"] = "Questroute volgen",
+	["From the quest route"] = "Uit de questroute",
+	["GPS"] = "GPS",
+	["Green: ahead. Red: behind you."] = "Groen: voor je. Rood: achter je.",
+	["In flight"] = "Onderweg met een vlucht",
+	["Later: fly from %s to %s"] = "Straks: vlieg van %s naar %s",
+	["Move down"] = "Omlaag",
+	["Move up"] = "Omhoog",
+	["Navigation is off (settings: Navigation)."] = "Navigatie staat uit (instellingen: Navigatie).",
+	["No position here"] = "Geen positie hier",
+	["No position known for this quest."] = "Geen positie bekend voor deze quest.",
+	["No route"] = "Geen route",
+	["No stops yet: Ctrl-click the world map or a quest title to add one."] = "Nog geen stops: Ctrl-klik op de wereldkaart of een questtitel om er een toe te voegen.",
+	["Other continent"] = "Ander continent",
+	["Previous stop"] = "Vorige stop",
+	["Quest objective"] = "Questdoel",
+	["Remove from the route"] = "Uit de route halen",
+	["Route"] = "Route",
+	["Route cleared. Turn on \"Follow quest route\" to get the quest route back."] = "Route gewist. Zet \"Questroute volgen\" aan om de questroute terug te krijgen.",
+	["Route list"] = "Routelijst",
+	["Right-click to skip this stop"] = "Rechtsklik om deze stop over te slaan",
+	["Saves ~%s"] = "Bespaart ~%s",
+	["Skip this stop"] = "Deze stop overslaan",
+	["Stop added: %s (#%d)"] = "Stop toegevoegd: %s (#%d)",
+	["Take flight at %s to %s"] = "Neem de vlucht in %s naar %s",
+	["Talk to the flight master: fly to %s"] = "Spreek de flight master aan: vlieg naar %s",
+	["The arrow shows the straight-line direction, not a path around hills or water."] = "De pijl wijst in vogelvlucht, niet langs een pad rond heuvels of water.",
+	["The route is full."] = "De route is vol.",
+	["then: %s"] = "daarna: %s",
+	["Total: %s, %s"] = "Totaal: %s, %s",
+	["Turn-in"] = "Inleveren",
+	["Waypoint"] = "Waypoint",
+	["Navigation"] = "Navigatie",
+	["Navigation (GPS)"] = "Navigatie (GPS)",
+	["Use CasterKit navigation"] = "CasterKit-navigatie gebruiken",
+	["A route of stops with a GPS panel: direction, distance, arrival time and the next stop."] = "Een route van stops met een GPS-paneel: richting, afstand, aankomsttijd en de volgende stop.",
+	["Follow the quest route"] = "De questroute volgen",
+	["The smart quest route (objectives, then turn-ins) comes after your own stops."] = "De slimme questroute (doelen, dan inleveren) komt na je eigen stops.",
+	["Suggest flight paths"] = "Vluchten voorstellen",
+	["Only flight paths you know. A flight is suggested when it saves more than a minute."] = "Enkel vluchten die je kent. Een vlucht wordt voorgesteld als ze meer dan een minuut bespaart.",
+	["Next stop on arrival"] = "Volgende stop bij aankomst",
+	["Your own waypoints leave the route when you reach them. Quest stops move on when the quest log changes."] = "Je eigen waypoints verdwijnen uit de route als je ze bereikt. Queststops schuiven door als je questlog verandert.",
+	["Show the GPS panel"] = "GPS-paneel tonen",
+	["Off: the small navigation arrow is used instead. Unlock the frames (General) to move the panel."] = "Uit: dan wordt de kleine navigatiepijl gebruikt. Ontgrendel de kaders (Algemeen) om het paneel te verplaatsen.",
+	["Panel size"] = "Paneelgrootte",
+	["Route list next to the world map"] = "Routelijst naast de wereldkaart",
+	["Click a stop to go there first; ^ v x to reorder or remove."] = "Klik een stop om er eerst naartoe te gaan; ^ v x om te verplaatsen of te verwijderen.",
+	["Ctrl-click a quest title or a spot on the world map to add a stop. The arrow shows the straight-line direction: WoW gives addons no data for paths, hills or water."] = "Ctrl-klik op een questtitel of een plek op de wereldkaart om een stop toe te voegen. De pijl wijst in vogelvlucht: WoW geeft addons geen gegevens over paden, heuvels of water.",
+	["Click a quest title to select it: the arrow points to it (click again for the route). Ctrl-click adds it to the navigation route. Right-click folds it open or closed. Click the lines under it (or Shift-click the title) to open it in the quest log. Unlock the frames (General) to move the list."] = "Klik op een questtitel om ze te selecteren: de pijl wijst ernaar (nog eens klikken voor de route). Ctrl-klik voegt ze toe aan de navigatieroute. Rechtsklik klapt ze open of dicht. Klik op de regels eronder (of Shift-klik op de titel) om ze te openen in het questlog. Ontgrendel de kaders (Algemeen) om de lijst te verplaatsen.",
+	["Route on the minimap"] = "Route op de minimap",
+	["The current stop and the next three, with lines. Stops outside the minimap show as an arrow on the edge."] = "De huidige stop en de volgende drie, met lijnen. Stops buiten de minimap verschijnen als pijltje aan de rand.",
+})
+
+add({
+	["Starts a quest"] = "Start een quest",
+})
+
+add({
+	["Route recalculated from where you are now."] = "Route herberekend vanaf waar je nu staat.",
+	["Recalculate route"] = "Route herberekenen",
+	["The route stays as it is until you click here. Finished stops drop off, new quests go last."] = "De route blijft zoals ze is tot je hier klikt. Afgewerkte stops vallen weg, nieuwe quests komen achteraan.",
+	["The route follows you as you move (turn on 'Keep the route' under Quests to lock it)."] = "De route past zich aan terwijl je beweegt (zet 'Route behouden' aan onder Quests om ze vast te zetten).",
+	["Keep the route until I recalculate"] = "Route behouden tot ik herbereken",
+	["The smart route keeps its order while you walk. Click the refresh button in the quest list header to plan it again from where you are."] = "De slimme route behoudt haar volgorde terwijl je loopt. Klik op de herlaadknop in de kop van de questlijst om ze opnieuw te plannen vanaf waar je staat.",
+})
+
+add({
+	["Route strategy"] = "Routestrategie",
+	["Route: %s"] = "Route: %s",
+	["Balanced"] = "Gebalanceerd",
+	["Turn in first"] = "Eerst inleveren",
+	["Quest first"] = "Eerst questen",
+	["Nearest"] = "Dichtstbij",
+	["Most XP per minute"] = "Meeste XP per minuut",
+	["Hand in what's ready, then quest"] = "Inleveren wat klaar is, dan verder questen",
+	["Objectives first, hand in at the end"] = "Eerst de doelen, op het einde inleveren",
+	["Always the closest stop"] = "Altijd de dichtstbijzijnde stop",
+	["Click: next, right-click: previous. The route is planned again."] = "Klik: volgende, rechtsklik: vorige. De route wordt opnieuw gepland.",
+})
+
+add({
+	["Needs the Enchanting profession (Disenchant)."] = "Vereist het beroep Enchanting (Disenchant).",
+})
+
+add({
+	["Your corpse"] = "Je lijk",
+})
+
+-- Key bindings (Bindings.xml); names are read before saved settings load, so English
+BINDING_HEADER_CASTERKIT = "CasterKit"
+BINDING_NAME_CASTERKIT_AOE = "Toggle AoE mode"
+BINDING_NAME_CASTERKIT_CONFIG = "Open settings"
