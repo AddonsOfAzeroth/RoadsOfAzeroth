@@ -123,105 +123,6 @@ function S:AnchorTop(frame, key)
 	frame:SetPoint(pt[1], UIParent, pt[3], pt[4] * us / fs, pt[5] * us / fs)
 end
 
----------------------------------------------------------------------------
--- Resize: a grip in the bottom-right corner (shown with the movers, or always
--- on windows) scales the frame: its layout stays as it is and grows or
--- shrinks as a whole. The top-left corner stays put. Double-click: normal size.
--- opts: key (saved in RoA.char.sizes) or get/set for a frame's own scale
--- setting; save(frame) stores the new position; parent for the grip.
----------------------------------------------------------------------------
-local MIN_SCALE, MAX_SCALE = 0.5, 2
-
-local function sizes()
-	RoA.char.sizes = RoA.char.sizes or {}
-	return RoA.char.sizes
-end
-
--- the scale a frame gets from its own settings; the grip multiplies it
-function S:SetBaseScale(frame, base)
-	frame.baseScale = base
-	self:ApplyScale(frame)
-end
-
-function S:ApplyScale(frame)
-	if InCombatLockdown() and frame:IsProtected() then return end
-	local g = frame.sizeKey and sizes()[frame.sizeKey] or 1
-	frame:SetScale((frame.baseScale or 1) * g)
-end
-
-local function pinTopLeft(frame, scale)
-	local left, top = frame:GetLeft(), frame:GetTop()
-	local fs = frame:GetEffectiveScale()
-	frame:SetScale(scale)
-	if not (left and top) then return end
-	local nfs = frame:GetEffectiveScale()
-	frame:ClearAllPoints()
-	frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left * fs / nfs, top * fs / nfs)
-end
-
-local function savePoint(frame, key)
-	local left, top = frame:GetLeft(), frame:GetTop()
-	if left and top then
-		RoA.char.points[key] = { "TOPLEFT", "UIParent", "BOTTOMLEFT", math.floor(left + 0.5), math.floor(top + 0.5) }
-	end
-end
-
-function S:AddSizeGrip(frame, opts)
-	local key = opts.key
-	if key and not opts.get then frame.sizeKey = key end
-	local get = opts.get or function() return sizes()[key] or 1 end
-	local set = opts.set or function(v) sizes()[key] = v end
-	local base = function() if opts.get then return 1 end return frame.baseScale or 1 end
-	local save = opts.save or function(f) savePoint(f, key) end
-	local grip = CreateFrame("Button", nil, opts.parent or frame)
-	grip:SetSize(14, 14)
-	grip:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -1, 1)
-	grip:SetFrameLevel((opts.parent or frame):GetFrameLevel() + 20)
-	for i = 0, 2 do
-		local t = grip:CreateTexture(nil, "OVERLAY")
-		t:SetColorTexture(self.colors.muted[1], self.colors.muted[2], self.colors.muted[3], 0.9)
-		t:SetSize(2 + i * 4, 1)
-		t:SetPoint("BOTTOMRIGHT", -1, 2 + i * 3)
-	end
-	grip:SetScript("OnEnter", function(g)
-		GameTooltip:SetOwner(g, "ANCHOR_RIGHT")
-		GameTooltip:SetText(RoA.L["Drag: bigger or smaller. Double-click: normal size."], 1, 1, 1, 1, true)
-		GameTooltip:Show()
-	end)
-	grip:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	grip:SetScript("OnMouseDown", function(g)
-		if InCombatLockdown() and frame:IsProtected() then return end
-		local startX = GetCursorPosition()
-		local start = get()
-		local w = math.max(20, frame:GetWidth() * frame:GetEffectiveScale())
-		g:SetScript("OnUpdate", function()
-			if InCombatLockdown() and frame:IsProtected() then return end
-			local s = start * math.max(0.1, (w + GetCursorPosition() - startX) / w)
-			s = math.floor(math.max(MIN_SCALE, math.min(MAX_SCALE, s)) * 100 + 0.5) / 100
-			if s ~= get() then
-				set(s)
-				pinTopLeft(frame, base() * s)
-			end
-		end)
-	end)
-	grip:SetScript("OnMouseUp", function(g)
-		if not g:GetScript("OnUpdate") then return end
-		g:SetScript("OnUpdate", nil)
-		save(frame)
-		if opts.done then opts.done() end
-		RoA:Fire("SIZE", key)
-	end)
-	grip:SetScript("OnDoubleClick", function()
-		if InCombatLockdown() and frame:IsProtected() then return end
-		set(1)
-		pinTopLeft(frame, base())
-		save(frame)
-		if opts.done then opts.done() end
-		RoA:Fire("SIZE", key)
-	end)
-	return grip
-end
-
 function S:RegisterMover(frame, key, label, defaultFn, anchorTop)
 	frame:SetMovable(true)
 	frame:SetClampedToScreen(true)
@@ -251,11 +152,6 @@ function S:RegisterMover(frame, key, label, defaultFn, anchorTop)
 	end)
 	o:Hide()
 	self.movers[key] = { frame = frame, overlay = o, defaultFn = defaultFn }
-	-- the resize grip shows with the mover
-	self:AddSizeGrip(frame, { key = key, parent = o, save = function(f)
-		if anchorTop then S:AnchorTop(f, key) else savePoint(f, key) end
-	end })
-	self:ApplyScale(frame)
 	self:ApplyPoint(frame, key)
 end
 
