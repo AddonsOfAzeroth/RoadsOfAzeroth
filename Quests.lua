@@ -1195,7 +1195,10 @@ function Q:Render(total, tracked)
 		t.text:SetTextColor(levelColor(q.level))
 		local skip = plan and Safe(plan.skip, nil)
 		t.skip = SKIP[skip] and skip or nil
-		if t.skip then
+		t.timed = RoA:QuestTimeLeft(q.id) and q.id or nil
+		if t.timed then
+			Q:PaintTimer(t)
+		elseif t.skip then
 			t.tag:SetText(L[SKIP[t.skip][1]])
 			local c = t.skip == "red" and ORANGE or S.colors.muted
 			t.tag:SetTextColor(c[1], c[2], c[3])
@@ -1392,6 +1395,20 @@ end
 ---------------------------------------------------------------------------
 -- Updates
 ---------------------------------------------------------------------------
+-- "4:30" in orange, red in the last minute; ticks every second (see OnEnable)
+function Q:PaintTimer(t)
+	local left = RoA:QuestTimeLeft(t.timed)
+	if not left then
+		t.timed = nil
+		t.tag:SetText("")
+		return Q:Redraw()
+	end
+	local m, s = math.floor(left / 60), math.floor(left % 60)
+	t.tag:SetText(m >= 60 and ("%d:%02d:%02d"):format(m / 60, m % 60, s) or ("%d:%02d"):format(m, s))
+	local c = left < 60 and RED or ORANGE
+	t.tag:SetTextColor(c[1], c[2], c[3])
+end
+
 function Q:Redraw()
 	if not self.panel then return end
 	local cfg = RoA.char.quests
@@ -1556,6 +1573,17 @@ end
 
 function Q:OnEnable()
 	local cfg = RoA.char.quests
+	-- quest timers count down in the list
+	local timerTick = CreateFrame("Frame")
+	local wait = 0
+	timerTick:SetScript("OnUpdate", function(_, elapsed)
+		wait = wait - elapsed
+		if wait > 0 then return end
+		wait = 1
+		for _, t in ipairs(titles) do
+			if t.timed and t:IsShown() then guard(Q.PaintTimer, Q, t) end
+		end
+	end)
 	if not cfg.arrowDefaultOn then
 		cfg.arrow, cfg.arrowDefaultOn = true, true
 	end

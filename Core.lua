@@ -202,6 +202,60 @@ function RoA:SetFramesLocked(locked)
 end
 
 ---------------------------------------------------------------------------
+-- Timed quests: seconds left, or nil for quests without a timer
+---------------------------------------------------------------------------
+local deadlines, deadlinesAt = {}, -1
+
+local function questIDAt(index)
+	if C_QuestLog and C_QuestLog.GetInfo then
+		local ok, info = pcall(C_QuestLog.GetInfo, index)
+		local id = ok and type(info) == "table" and RoA.Safe(info.questID, nil)
+		if type(id) == "number" then return id end
+	end
+	if GetQuestLogTitle then
+		local ok, _, _, _, _, _, _, _, id = pcall(GetQuestLogTitle, index)
+		id = ok and RoA.Safe(id, nil)
+		if type(id) == "number" then return id end
+	end
+end
+
+local function readTimers()
+	wipe(deadlines)
+	local now = GetTime()
+	-- classic: one timer per timed quest, matched to its quest log line
+	if GetQuestTimers and GetQuestIndexForTimer then
+		local t = { pcall(GetQuestTimers) }
+		if t[1] then
+			for i = 2, #t do
+				local left = RoA.Safe(t[i], nil)
+				local ok, index = pcall(GetQuestIndexForTimer, i - 1)
+				local id = ok and type(index) == "number" and questIDAt(index)
+				if id and type(left) == "number" and left > 0 then deadlines[id] = now + left end
+			end
+		end
+	end
+	deadlinesAt = now
+end
+
+function RoA:QuestTimeLeft(questID)
+	if not questID then return end
+	local now = GetTime()
+	if now - deadlinesAt > 5 then readTimers() end
+	local d = deadlines[questID]
+	if not d and C_QuestLog and C_QuestLog.GetTimeAllowed then
+		local ok, total, elapsed = pcall(C_QuestLog.GetTimeAllowed, questID)
+		total, elapsed = ok and RoA.Safe(total, nil), ok and RoA.Safe(elapsed, nil)
+		if type(total) == "number" and type(elapsed) == "number" and total > 0 and elapsed < total then
+			d = now + (total - elapsed)
+			deadlines[questID] = d
+		end
+	end
+	if d then return math.max(0, d - now) end
+end
+
+RoA:On("QUEST_LOG_UPDATE", function() deadlinesAt = -1 end)
+
+---------------------------------------------------------------------------
 -- One-time move of the route data from CasterKit's saved variables
 ---------------------------------------------------------------------------
 local MOVED = { "nav", "quests", "arrow", "questLearn" }

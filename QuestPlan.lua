@@ -816,6 +816,24 @@ function QP:Recompute()
 		end
 	end
 	self.recalculating = nil
+	-- timed quests go first, the least time left first, whatever the strategy or lock
+	local function soonest(n)
+		local best
+		for _, q in ipairs(n.quests) do
+			local left = RoA:QuestTimeLeft(q.questID)
+			if left and (not best or left < best) then best = left end
+		end
+		return best
+	end
+	local timed = {}
+	for i = #order, 1, -1 do
+		local left = soonest(order[i])
+		if left then
+			table.insert(timed, { node = table.remove(order, i), left = left })
+		end
+	end
+	table.sort(timed, function(a, b) return a.left > b.left end)
+	for _, t in ipairs(timed) do table.insert(order, 1, t.node) end
 	wipe(smartOrder)
 	wipe(route)
 	local function addNode(n, toRoute)
