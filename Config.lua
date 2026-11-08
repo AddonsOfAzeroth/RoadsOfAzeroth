@@ -292,8 +292,8 @@ end
 function C:BuildGeneral(p)
 	p:Header(L["General"])
 	p:Check(L["Frames locked"], L["Turn off to drag the quest list, the GPS panel and the arrow."],
-		function() return RoA.char.bars.locked end,
-		function(v) RoA.char.bars.locked = v; changed("bars") end)
+		function() return RoA:FramesLocked() end,
+		function(v) RoA:SetFramesLocked(v) end)
 	p:Choice(L["Language"], { { "auto", L["Automatic"] }, { "enUS", "English" }, { "nlNL", "Nederlands" } },
 		function() return RoA.db.language end,
 		function(v) RoA.db.language = v end)

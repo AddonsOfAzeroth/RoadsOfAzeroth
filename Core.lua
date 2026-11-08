@@ -182,6 +182,23 @@ function RoA:Casters()
 	if type(c) == "table" and type(c.char) == "table" then return c end
 end
 
+-- One lock for all frames: with Casters of Azeroth loaded its "Frames locked" wins.
+function RoA:FramesLocked()
+	local c = self:Casters()
+	if c and type(c.char.bars) == "table" then return c.char.bars.locked ~= false end
+	return self.char.bars.locked
+end
+
+function RoA:SetFramesLocked(locked)
+	self.char.bars.locked = locked
+	local c = self:Casters()
+	if c and type(c.char.bars) == "table" then
+		c.char.bars.locked = locked
+		if c.Fire then c:Fire("SETTINGS", "bars") end
+	end
+	self:Fire("SETTINGS", "bars")
+end
+
 ---------------------------------------------------------------------------
 -- One-time move of the route data from CasterKit's saved variables
 ---------------------------------------------------------------------------
@@ -248,6 +265,14 @@ RoA:On("PLAYER_LOGIN", function()
 		end
 	end
 	RoA.where = nil
+	-- follow Casters of Azeroth's lock/unlock
+	local c = RoA:Casters()
+	if c and c.Listen then
+		c:Listen("SETTINGS", function(group)
+			if group == "bars" and RoA.Style then RoA.Style:UpdateMovers() end
+		end)
+	end
+	if RoA.Style then RoA.Style:UpdateMovers() end
 	if RoA.migratedNow then
 		RoA:Print(RoA.L["Your quest list, route and GPS settings were moved over from CasterKit."])
 	end
@@ -265,8 +290,7 @@ SlashCmdList.ROADSOFAZEROTH = function(msg)
 	elseif msg == "clear" then
 		if RoA.Nav and RoA.Nav.Clear then RoA.Nav:Clear() end
 	elseif msg == "unlock" or msg == "lock" then
-		RoA.char.bars.locked = msg == "lock"
-		RoA:Fire("SETTINGS", "bars")
+		RoA:SetFramesLocked(msg == "lock")
 	elseif msg == "debug" then
 		RoA.debug = not RoA.debug
 		RoA:Print("debug " .. (RoA.debug and "on" or "off"))

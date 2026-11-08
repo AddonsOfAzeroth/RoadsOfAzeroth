@@ -156,7 +156,7 @@ function S:RegisterMover(frame, key, label, defaultFn, anchorTop)
 end
 
 function S:UpdateMovers()
-	local show = not RoA.char.bars.locked and not InCombatLockdown()
+	local show = not RoA:FramesLocked() and not InCombatLockdown()
 	for _, m in pairs(self.movers) do m.overlay:SetShown(show) end
 end
 
