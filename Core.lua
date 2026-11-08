@@ -22,6 +22,7 @@ local charDefaults = {
 		mapList = true,      -- route list docked to the world map
 		minimap = true,      -- current stop + next 3 on the minimap, with lines
 		autoAdvance = true,  -- own custom waypoints leave the route on arrival
+		trails = true,       -- learn walked paths (account wide) and steer along them
 		queue = {},          -- own stops {mapID, x, y, title, kind, questID}
 		taxiKnown = {},      -- flight path node IDs (and "n:<name>") seen at flight masters
 	},
@@ -291,6 +292,12 @@ SlashCmdList.ROADSOFAZEROTH = function(msg)
 		if RoA.Nav and RoA.Nav.Clear then RoA.Nav:Clear() end
 	elseif msg == "unlock" or msg == "lock" then
 		RoA:SetFramesLocked(msg == "lock")
+	elseif msg == "trails" then
+		local n, c = RoA.Trails:Stats()
+		RoA:Print(L["Learned paths: %d points on %d continent(s). /roa trails clear forgets them."]:format(n, c))
+	elseif msg == "trails clear" then
+		RoA.Trails:Clear()
+		RoA:Print(L["Learned paths cleared."])
 	elseif msg == "debug" then
 		RoA.debug = not RoA.debug
 		RoA:Print("debug " .. (RoA.debug and "on" or "off"))

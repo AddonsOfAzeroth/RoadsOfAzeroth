@@ -187,11 +187,20 @@ local function update()
 	local arrived = dist <= arrive
 	state.status, state.dist, state.arrived = "ok", dist, arrived
 
+	-- learned paths (Trails.lua): steer along walked paths when that is shorter
+	local sn, sw, pathLen
+	if not arrived and RoA.Trails and RoA.Trails.Steer then
+		sn, sw, pathLen = RoA.Trails:Steer(cont, pn, pw, t.wn, t.ww)
+	end
+	state.via = sn ~= nil
+	local an, aw = dn, dw
+	if sn then an, aw = sn - pn, sw - pw end
+
 	-- rotation: 0 = north, counter-clockwise, same as GetPlayerFacing()
 	local facing = GetPlayerFacing and num(GetPlayerFacing())
 	local r, g, b = unpack(S.colors.accent)
 	if facing then
-		local rel = atan2(dw, dn) - facing
+		local rel = atan2(aw, an) - facing
 		state.rel = rel
 		local dot = cos(rel) -- 1 = straight ahead, -1 = behind
 		if arrived then
@@ -233,7 +242,8 @@ local function update()
 		t.arrivedAt = nil
 		if infoText then
 			infoText:SetTextColor(unpack(S.colors.muted))
-			infoText:SetText(distText(dist) .. "  " .. formatETA(dist / travelSpeed()))
+			local d = pathLen or dist
+			infoText:SetText(distText(d) .. "  " .. formatETA(d / travelSpeed()) .. (sn and ("  " .. L["path"]) or ""))
 		end
 	end
 end

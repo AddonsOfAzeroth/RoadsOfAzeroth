@@ -361,7 +361,14 @@ function C:BuildNav(p)
 	p:Button(L["Clear route"], function()
 		if RoA.Nav and RoA.Nav.Clear then RoA.Nav:Clear() end
 	end)
-	p:Note(L["Ctrl-click a quest title or a spot on the world map to add a stop. The arrow shows the straight-line direction: WoW gives addons no data for paths, hills or water."])
+	p:Gap()
+	p:Header(L["Learned paths"])
+	p:Check(L["Learn paths and follow them"], L["Remembers where you walk (all your characters). The arrow then follows those paths when that is shorter than going straight over unknown ground."], setting("nav", "trails"))
+	p:Button(L["Forget learned paths"], function()
+		if RoA.Trails then RoA.Trails:Clear() end
+		RoA:Print(L["Learned paths cleared."])
+	end)
+	p:Note(L["Ctrl-click a quest title or a spot on the world map to add a stop. WoW gives addons no data for hills, walls or water: without learned paths the arrow points in a straight line."])
 end
 
 function C:RegisterBlizzardSettings()

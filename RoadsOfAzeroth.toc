@@ -16,6 +16,7 @@ Core.lua
 Locale.lua
 Style.lua
 Arrow.lua
+Trails.lua
 QuestPlan.lua
 Nav.lua
 Quests.lua
