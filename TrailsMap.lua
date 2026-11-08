@@ -122,8 +122,8 @@ local function draw()
 		holder:SetAllPoints(c0)
 		holder:EnableMouse(false)
 	end
-	-- above the map tiles, below the pins
-	holder:SetFrameLevel(c0:GetFrameLevel() + 20)
+	-- above the map tiles (they sit high), just under the quest route lines (Map.lua: +5999)
+	holder:SetFrameLevel(math.min(9400, c0:GetFrameLevel() + 5990))
 	local mapID = WMF.GetMapID and num(try(WMF.GetMapID, WMF))
 	local cont = mapID and continentOf(mapID)
 	if not cont then status = "map " .. tostring(mapID) .. ": no continent" return end
