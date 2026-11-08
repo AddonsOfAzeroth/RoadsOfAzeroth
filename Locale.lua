@@ -587,6 +587,7 @@ add({
 
 add({
 	["Your corpse"] = "Je lijk",
+	["Drag: make it bigger so more fits. Double-click: default size."] = "Slepen: groter maken zodat er meer in past. Dubbelklik: standaardgrootte.",
 })
 
 -- Key bindings (Bindings.xml); names are read before saved settings load, so English

@@ -960,7 +960,10 @@ function Q:CreatePanel()
 	S:RegisterMover(p, "quests", L["Quests"], function(f)
 		-- under the minimap
 		f:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -10, -230)
-	end, true)
+	end, true, S:Sizing(p, "quests", { axis = "x", min = { 180, 0 }, max = { 600, 0 }, apply = function(w)
+		RoA.char.quests.width = w or 260
+		Q:Redraw()
+	end }))
 end
 
 function Q:UpdateScrollbar()
