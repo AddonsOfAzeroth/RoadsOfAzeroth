@@ -1363,7 +1363,7 @@ function applyPanel()
 	if not panel then return end
 	local want = cfg.enabled and cfg.showPanel and true or false
 	local scale = num(cfg.panelScale)
-	panel:SetScale((scale and scale >= 0.5 and scale <= 2) and scale or 1)
+	S:SetBaseScale(panel, (scale and scale >= 0.5 and scale <= 2) and scale or 1) -- times the resize grip
 	local unlocked = RoA.char.bars and not RoA.char.bars.locked and not inCombat and not InCombatLockdown()
 	if want and (shown[1] or unlocked or listOpen) then
 		if not panel:IsShown() then

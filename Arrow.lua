@@ -280,7 +280,7 @@ local function refresh()
 	end
 	if not frame then return end
 	local scale = num(cfg.scale)
-	frame:SetScale((scale and scale > 0.3 and scale < 3) and scale or 1)
+	S:SetBaseScale(frame, (scale and scale > 0.3 and scale < 3) and scale or 1) -- times the resize grip
 	if embedded then
 		frame:Hide()
 	elseif cfg.enabled and target then
