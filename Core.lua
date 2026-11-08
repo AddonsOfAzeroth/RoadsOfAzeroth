@@ -347,6 +347,7 @@ SlashCmdList.ROADSOFAZEROTH = function(msg)
 		if RoA.Nav and RoA.Nav.Clear then RoA.Nav:Clear() end
 	elseif msg == "unlock" or msg == "lock" then
 		RoA:SetFramesLocked(msg == "lock")
+		RoA:Print(msg == "lock" and L["Frames locked."] or L["Frames unlocked: drag them where you like, drag a corner to make them bigger, type /roa lock when done."])
 	elseif msg == "trails" then
 		local n, c = RoA.Trails:Stats()
 		RoA:Print(L["Learned paths: %d points on %d continent(s). /roa trails clear forgets them."]:format(n, c))

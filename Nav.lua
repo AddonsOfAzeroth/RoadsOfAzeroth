@@ -1022,10 +1022,16 @@ local function createList(parent, width)
 	title:SetTextColor(unpack(S.colors.accent))
 	title:SetText(L["Route"])
 
-	local clear = smallButton(f, L["Clear"], 44, L["Clear route"], function() NV:Clear() end)
+	local clear = smallButton(f, L["Clear"], 44, L["Clear route"], function()
+		StaticPopupDialogs.ROADSOFAZEROTH_CLEAR = StaticPopupDialogs.ROADSOFAZEROTH_CLEAR or { button1 = YES, button2 = NO,
+			timeout = 0, whileDead = true, hideOnEscape = true, preferredIndex = 3 }
+		StaticPopupDialogs.ROADSOFAZEROTH_CLEAR.text = L["Clear the whole route?"]
+		StaticPopupDialogs.ROADSOFAZEROTH_CLEAR.OnAccept = function() NV:Clear() end
+		StaticPopup_Show("ROADSOFAZEROTH_CLEAR")
+	end)
 	clear:SetPoint("TOPRIGHT", -5, -5)
 	local back = smallButton(f, "<", 18, L["Previous stop"], function() NV:Previous() end)
-	back:SetPoint("RIGHT", clear, "LEFT", -3, 0)
+	back:SetPoint("RIGHT", clear, "LEFT", -10, 0)
 
 	local chk = CreateFrame("Button", nil, f, "BackdropTemplate")
 	chk:SetSize(12, 12)
@@ -1071,11 +1077,11 @@ local function createList(parent, width)
 		r.icon = r:CreateTexture(nil, "ARTWORK")
 		r.icon:SetSize(13, 13)
 		r.icon:SetPoint("LEFT", r.num, "RIGHT", 4, 0)
-		r.del = smallButton(r, "x", 14, L["Remove from the route"], function(btn) NV:RemoveShown(btn:GetParent().index) end)
+		r.del = smallButton(r, "x", 20, L["Remove from the route"], function(btn) NV:RemoveShown(btn:GetParent().index) end)
 		r.del:SetPoint("RIGHT", 0, 0)
-		r.down = smallButton(r, "v", 14, L["Move down"], function(btn) NV:MoveShown(btn:GetParent().index, 1) end)
+		r.down = smallButton(r, "v", 20, L["Move down"], function(btn) NV:MoveShown(btn:GetParent().index, 1) end)
 		r.down:SetPoint("RIGHT", r.del, "LEFT", -2, 0)
-		r.up = smallButton(r, "^", 14, L["Move up"], function(btn) NV:MoveShown(btn:GetParent().index, -1) end)
+		r.up = smallButton(r, "^", 20, L["Move up"], function(btn) NV:MoveShown(btn:GetParent().index, -1) end)
 		r.up:SetPoint("RIGHT", r.down, "LEFT", -2, 0)
 		r.dist = S:Font(r, 10)
 		r.dist:SetPoint("RIGHT", r.up, "LEFT", -4, 0)
