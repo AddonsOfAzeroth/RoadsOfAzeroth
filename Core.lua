@@ -47,6 +47,7 @@ local charDefaults = {
 	map = {
 		enabled = true, -- route on the world map
 		route = true,
+		trails = false, -- learned paths as a heatmap (button on the map)
 	},
 	arrow = {
 		enabled = true,

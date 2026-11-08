@@ -21,5 +21,6 @@ QuestPlan.lua
 Nav.lua
 Quests.lua
 Map.lua
+TrailsMap.lua
 API.lua
 Config.lua

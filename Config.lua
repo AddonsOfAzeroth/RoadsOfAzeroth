@@ -338,6 +338,7 @@ end
 function C:BuildMap(p)
 	p:Header(L["World map"])
 	p:Check(L["Show the quest route on the map"], L["Numbered stops in the fastest order, with lines between them."], setting("map", "route"))
+	p:Check(L["Show learned paths (heatmap)"], L["Where you walked, coloured by how often. Also the \"Paths\" button at the bottom left of the world map."], setting("map", "trails"))
 	p:Gap()
 	p:Header(L["Navigation arrow"])
 	p:Check(L["Use the arrow"], nil, setting("arrow", "enabled"))

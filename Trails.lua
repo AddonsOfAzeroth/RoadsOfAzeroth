@@ -301,6 +301,12 @@ function T:Steer(cont, pn, pw, tn, tw)
 	-- end of the path: the target is next
 end
 
+-- The learned data of one continent (read only), or nil when there is none.
+function T:Data(cont)
+	local c = store()[tostring(cont)]
+	if type(c) == "table" and type(c.p) == "table" and type(c.l) == "table" then return c end
+end
+
 function T:Stats()
 	local points, conts = 0, 0
 	for _, c in pairs(store()) do
