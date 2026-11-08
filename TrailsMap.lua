@@ -17,6 +17,7 @@ local MARGIN = 0.02      -- keep lines just outside the visible map
 local WMF, holder, button, ticker
 local lines, used = {}, 0
 local lastScale
+local status = "" -- why nothing is drawn (shown in the button's tooltip)
 
 local function num(v)
 	if RoA.IsSecret(v) then return end
@@ -112,19 +113,26 @@ end
 
 local function draw()
 	hideAll()
+	status = ""
 	if not (shown() and WMF and WMF:IsShown() and RoA.Trails) then return end
 	local c0 = canvas()
-	if not c0 then return end
+	if not c0 then status = "no canvas" return end
 	if not holder then
 		holder = CreateFrame("Frame", nil, c0)
 		holder:SetAllPoints(c0)
 		holder:EnableMouse(false)
 	end
+	-- above the map tiles, below the pins
+	holder:SetFrameLevel(c0:GetFrameLevel() + 20)
 	local mapID = WMF.GetMapID and num(try(WMF.GetMapID, WMF))
 	local cont = mapID and continentOf(mapID)
-	local c = cont and RoA.Trails:Data(cont)
-	if not c then return end
+	if not cont then status = "map " .. tostring(mapID) .. ": no continent" return end
+	local c = RoA.Trails:Data(cont)
+	if not c then status = "no paths on continent " .. tostring(cont) return end
 	local pos = project(mapID, cont, c)
+	local onMap = 0
+	for _ in pairs(pos) do onMap = onMap + 1 end
+	status = ("%d points on this map"):format(onMap)
 	local w, h = c0:GetWidth(), c0:GetHeight()
 	local t = WIDTH / canvasScale()
 	lastScale = canvasScale()
@@ -151,7 +159,7 @@ end
 local function refresh()
 	if button then button:SetBackdropBorderColor(unpack(shown() and S.colors.accent or { 0, 0, 0, 1 })) end
 	local ok, err = pcall(draw)
-	if not ok and RoA.debug then RoA:Print("trails map: " .. tostring(err)) end
+	if not ok then status = "error: " .. tostring(err) end
 end
 TM.Refresh = refresh
 
@@ -174,6 +182,7 @@ local function makeButton()
 		GameTooltip:AddLine(L["Where you (all your characters) walked. Blue: once or twice, yellow: often, red: your main roads."], 0.6, 0.65, 0.71, true)
 		local n = RoA.Trails and RoA.Trails:Stats() or 0
 		GameTooltip:AddLine(L["%d points learned."]:format(n), 0.6, 0.65, 0.71)
+		if shown() then GameTooltip:AddLine(status .. (used > 0 and (", " .. used .. " lines") or ""), 0.6, 0.65, 0.71) end
 		GameTooltip:Show()
 	end)
 	b:SetScript("OnLeave", function() GameTooltip:Hide() end)
