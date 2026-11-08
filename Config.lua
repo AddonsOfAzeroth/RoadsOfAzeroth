@@ -344,7 +344,7 @@ function C:BuildMap(p)
 	local getA, setA = setting("arrow", "scale")
 	p:Slider(L["Arrow size"], 0.6, 1.6, 0.05, getA, setA, function(v) return ("%d%%"):format(v * 100 + 0.5) end)
 	p:Slider(L["Arrived within"], 5, 40, 1, setting("arrow", "arriveYards"))
-	p:Note(L["Click a quest title to select it: the arrow points to it (click again for the route). Ctrl-click adds it to the navigation route. Right-click folds it open or closed. Click the lines under it (or Shift-click the title) to open it in the quest log."])
+	p:Note(L["Click a quest (title or lines) to make it your target: the arrow points to it (click again for the route). Shift-click opens it in the quest log, Alt-click opens its details in Scrum of Azeroth, Ctrl-click adds it to the navigation route. Right-click the title folds it."])
 end
 
 function C:BuildNav(p)

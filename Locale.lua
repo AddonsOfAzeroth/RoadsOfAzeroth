@@ -62,6 +62,7 @@ add({
 	["Character, spellbook, talents, quests… tidy in one panel."] = "Personage, spreukenboek, talenten, quests… netjes in één kader.",
 	["Class color on the health bar"] = "Klassekleur op de levensbalk",
 	["Click: "] = "Klik: ",
+	["Click a quest (title or lines) to make it your target: the arrow points to it (click again for the route). Shift-click opens it in the quest log, Alt-click opens its details in Scrum of Azeroth, Ctrl-click adds it to the navigation route. Right-click the title folds it."] = "Klik op een quest (titel of regels) om hem je doel te maken: de pijl wijst ernaar (nog eens klikken voor de route). Shift-klik opent hem in het questlog, Alt-klik opent de details in Scrum of Azeroth, Ctrl-klik zet hem in de navigatieroute. Rechtsklik op de titel klapt hem dicht.",
 	["Click: settings"] = "Klik: instellingen",
 	["Colors: gold = press now, purple = proc (e.g. Fingers of Frost), blue = defensive (falling, rooted, too close)."] = "Kleuren: goud = nu indrukken, paars = proc (bv. Fingers of Frost), blauw = defensief (vallen, vastzitten, te dichtbij).",
 	["Commands"] = "Commando's",

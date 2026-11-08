@@ -563,13 +563,15 @@ local function onTitleClick(self, button)
 			addToRoute(id, self.questTitle)
 		elseif IsShiftKeyDown() then
 			openQuest(id, self.logIndex)
+		elseif IsAltKeyDown and IsAltKeyDown() then
+			ask("OnQuestClick", id) -- optional provider (e.g. Scrum of Azeroth's quest details)
 		elseif button == "RightButton" then
 			local c = RoA.char.quests.collapsed
 			c[id] = not c[id] or nil
 			Q:Redraw()
 		else
+			-- a plain click only selects the quest as the target (arrow/GPS)
 			Q:ClickQuest(id, self.questTitle)
-			ask("OnQuestClick", id) -- optional provider (e.g. opens its quest details); no-op without one
 		end
 	end)
 end
@@ -703,15 +705,16 @@ function Q:TitleRow(i)
 	return t
 end
 
--- Lines under a title open that quest in the quest log (right-click: waypoint)
+-- Lines under a title select that quest as the target, like the title;
+-- Shift-click or right-click opens it in the quest log
 local function onLineClick(self, button)
 	guard(function()
 		local id = self.questID
 		if not id then return end
-		if button == "RightButton" then
-			setWaypoint(id, self.questTitle)
-		else
+		if button == "RightButton" or IsShiftKeyDown() then
 			openQuest(id, self.logIndex)
+		else
+			Q:ClickQuest(id, self.questTitle)
 		end
 	end)
 end
