@@ -398,9 +398,9 @@ local function registerWithCasters()
 	if type(c) ~= "table" then return end
 	c.configPages = type(c.configPages) == "table" and c.configPages or {}
 	local pages = {
-		{ key = "roa_quests", label = L["Quests"], build = function(p) C:BuildQuests(p) end },
-		{ key = "roa_map", label = L["Map and arrow"], build = function(p) C:BuildMap(p) end },
-		{ key = "roa_nav", label = L["Navigation"], build = function(p) C:BuildNav(p) end },
+		{ key = "roa_quests", label = L["Quests"], group = "Roads of Azeroth", build = function(p) C:BuildQuests(p) end },
+		{ key = "roa_map", label = L["Map and arrow"], group = "Roads of Azeroth", build = function(p) C:BuildMap(p) end },
+		{ key = "roa_nav", label = L["Navigation"], group = "Roads of Azeroth", build = function(p) C:BuildNav(p) end },
 	}
 	for _, def in ipairs(pages) do
 		local known = false
