@@ -1255,7 +1255,7 @@ function Q:Render(total, tracked)
 		setFont(r.text, size)
 		setFont(r.count, small)
 		local folded = groupFolded(g)
-		r.chev:SetTexture(folded and "Interface\Buttons\UI-PlusButton-Up" or "Interface\Buttons\UI-MinusButton-Up")
+		r.chev:SetTexture(folded and "Interface\\Buttons\\UI-PlusButton-Up" or "Interface\\Buttons\\UI-MinusButton-Up")
 		local c = type(e.color) == "table" and e.color or S.colors.muted
 		local name = str(e.name) or "?"
 		local tag = str(e.tag)
