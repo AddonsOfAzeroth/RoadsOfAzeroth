@@ -590,6 +590,17 @@ add({
 
 add({
 	["Your corpse"] = "Je lijk",
+	["Little XP for the time"] = "Weinig XP voor de tijd",
+	["Little XP for the time it takes, compared to your other quests."] = "Weinig XP voor de tijd die het kost, vergeleken met je andere quests.",
+	["Advice"] = "Advies",
+	["Pick up nearby (%d)"] = "Op te pikken in de buurt (%d)",
+	["Quest"] = "Quest",
+	["Click: add the quest giver as a GPS stop."] = "Klik: de questgever als GPS-stop toevoegen.",
+	["From Questie: no spot known."] = "Uit Questie: geen plek bekend.",
+	["Quests to pick up nearby"] = "Quests om op te pikken in de buurt",
+	["A folded line under the list; open it for the nearest quests you don't have yet. More with Questie loaded."] = "Een ingeklapte regel onder de lijst; open hem voor de dichtstbijzijnde quests die je nog niet hebt. Meer met Questie aan.",
+	["%s XP in ~%s: %s XP per hour"] = "%s XP in ~%s: %s XP per uur",
+	["%d more quest(s) follow in this chain: worth doing."] = "Er volgen nog %d quest(s) in deze keten: de moeite waard.",
 	["Drag: make it bigger so more fits. Double-click: default size."] = "Slepen: groter maken zodat er meer in past. Dubbelklik: standaardgrootte.",
 })
 

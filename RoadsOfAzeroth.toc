@@ -20,6 +20,7 @@ Trails.lua
 QuestPlan.lua
 Nav.lua
 Quests.lua
+Pickup.lua
 Map.lua
 TrailsMap.lua
 API.lua

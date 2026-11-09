@@ -329,6 +329,39 @@ local function isElite(questID)
 	return false
 end
 
+-- How many quests follow this one in its chain: Questie's database when it is
+-- loaded, else Blizzard's quest line info. Cached per quest.
+local followCache = {}
+local function followUps(questID)
+	if followCache[questID] ~= nil then return followCache[questID] end
+	local n = 0
+	local QLd = _G.QuestieLoader
+	local ok, DB = false, nil
+	if type(QLd) == "table" and QLd.ImportModule then ok, DB = pcall(QLd.ImportModule, QLd, "QuestieDB") end
+	if ok and type(DB) == "table" and DB.QueryQuestSingle then
+		local id, seen = questID, {}
+		for _ = 1, 8 do
+			local ok2, nxt = pcall(DB.QueryQuestSingle, id, "nextQuestInChain")
+			nxt = ok2 and num(nxt) or nil
+			if not nxt or nxt == 0 or seen[nxt] then break end
+			seen[nxt] = true
+			n, id = n + 1, nxt
+		end
+	elseif C_QuestLine and C_QuestLine.GetQuestLineInfo and C_QuestLine.GetQuestLineQuests then
+		local info = try(C_QuestLine.GetQuestLineInfo, questID)
+		local line = type(info) == "table" and num(info.questLineID)
+		local list = line and try(C_QuestLine.GetQuestLineQuests, line)
+		if type(list) == "table" then
+			for i, id in ipairs(list) do
+				if id == questID then n = #list - i break end
+			end
+		end
+	end
+	followCache[questID] = n
+	return n
+end
+QP.FollowUps = followUps
+
 local function isGrey(level, pl)
 	if level <= grayLevel(pl) then return true end
 	if GetQuestDifficultyColor and QuestDifficultyColors and QuestDifficultyColors.trivial then
@@ -805,6 +838,26 @@ function QP:Recompute()
 		end
 	end
 
+	-- a quest with follow-ups is worth more than its own XP
+	for _, q in ipairs(quests) do
+		q.followUps = followUps(q.questID)
+		if q.followUps > 0 then q.value = q.value * (1 + 0.4 * math.min(3, q.followUps)) end
+	end
+	-- much less XP per minute than your other quests (and nothing after it): skip?
+	local rates = {}
+	for _, q in ipairs(quests) do
+		if not q.skip and not q.turnIn and q.xpPerHour then rates[#rates + 1] = q.xpPerHour end
+	end
+	if #rates >= 4 then
+		table.sort(rates)
+		local median = rates[math.floor((#rates + 1) / 2)]
+		for _, q in ipairs(quests) do
+			if not q.skip and not q.turnIn and q.xpPerHour and q.followUps == 0 and q.xpPerHour < median * 0.45 then
+				q.skip = "slow"
+			end
+		end
+	end
+
 	-- "smart": routed nodes, then quests without a stop, then skipped ones
 	local order, noStop = planRoute(quests, start, speed)
 	if routeLocked() then
@@ -931,7 +984,7 @@ end
 ---------------------------------------------------------------------------
 -- Public API
 ---------------------------------------------------------------------------
-local FIELDS = { "questID", "title", "level", "xp", "minutes", "xpPerHour", "distance", "zoneMatch", "turnIn", "skip" }
+local FIELDS = { "questID", "title", "level", "xp", "minutes", "xpPerHour", "distance", "zoneMatch", "turnIn", "skip", "followUps" }
 
 local function export(q, rank)
 	local e = { rank = rank }
@@ -980,7 +1033,8 @@ function QP:SkipText(code)
 	if code == "grey" then return Lc["Low level, little XP"]
 	elseif code == "elite" then return Lc["Group quest"]
 	elseif code == "red" then return Lc["Level too high"]
-	elseif code == "far" then return Lc["Far away"] end
+	elseif code == "far" then return Lc["Far away"]
+	elseif code == "slow" then return Lc["Little XP for the time"] end
 end
 
 ---------------------------------------------------------------------------

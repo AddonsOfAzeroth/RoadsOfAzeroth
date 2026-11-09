@@ -34,6 +34,7 @@ local SKIP = {
 	elite = { "Skip?", "Group or elite quest: hard solo." },
 	far = { "Skip?", "Far away or on another continent." },
 	red = { "Later", "Much higher level: come back later." },
+	slow = { "Skip?", "Little XP for the time it takes, compared to your other quests." },
 }
 
 
@@ -662,14 +663,26 @@ function Q:EpicRow(i)
 	return r
 end
 
--- Tooltip on a skip suggestion
+-- Tooltip: the advice for this quest (XP per hour, follow-ups, skip reason)
 local function onTitleEnter(self)
 	guard(function()
 		local s = self.skip and SKIP[self.skip]
-		if not (s and GameTooltip) then return end
+		local p = self.plan
+		if not GameTooltip or not (s or (p and (p.xpPerHour or (p.followUps or 0) > 0))) then return end
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:SetText(L[s[1]], 1, 0.82, 0)
-		GameTooltip:AddLine(L[s[2]], 1, 1, 1, true)
+		if s then
+			GameTooltip:SetText(L[s[1]], 1, 0.82, 0)
+			GameTooltip:AddLine(L[s[2]], 1, 1, 1, true)
+		else
+			GameTooltip:SetText(L["Advice"], 1, 0.82, 0)
+		end
+		if p and p.xp and p.minutes then
+			GameTooltip:AddLine(L["%s XP in ~%s: %s XP per hour"]:format(p.xp, RoA.Style.Minutes and RoA.Style:Minutes(p.minutes)
+				or (math.floor(p.minutes + 0.5) .. " min"), p.xpPerHour or "?"), 0.8, 0.8, 0.8, true)
+		end
+		if p and (p.followUps or 0) > 0 then
+			GameTooltip:AddLine(L["%d more quest(s) follow in this chain: worth doing."]:format(p.followUps), 0.35, 0.85, 0.45, true)
+		end
 		GameTooltip:Show()
 	end)
 end
@@ -1198,6 +1211,7 @@ function Q:Render(total, tracked)
 		t.text:SetTextColor(levelColor(q.level))
 		local skip = plan and Safe(plan.skip, nil)
 		t.skip = SKIP[skip] and skip or nil
+		t.plan = plan
 		t.timed = RoA:QuestTimeLeft(q.id) and q.id or nil
 		if t.timed then
 			Q:PaintTimer(t)

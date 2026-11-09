@@ -43,6 +43,8 @@ local charDefaults = {
 		frozenRoute = nil, -- saved stop order (quest keys) while the route is locked
 		showEstimates = true,
 		arrow = true, -- the arrow (Arrow.lua) to the next stop
+		pickup = true,      -- "Pick up nearby" under the quest list (Pickup.lua)
+		pickupOpen = false, -- folded open or not
 	},
 	map = {
 		enabled = true, -- route on the world map

@@ -309,6 +309,7 @@ end
 function C:BuildQuests(p)
 	p:Header(L["Quests"])
 	p:Check(L["Quest tracker"], L["A compact list: level colours, progress bars, turn-ins on top."], setting("quests", "enabled"))
+	p:Check("   " .. L["Quests to pick up nearby"], L["A folded line under the list; open it for the nearest quests you don't have yet. More with Questie loaded."], setting("quests", "pickup"))
 	p:Check(L["Hide the Blizzard quest tracker"], nil, setting("quests", "hideBlizzard"))
 	p:Check(L["Hide the Questie tracker (Questie keeps its map pins)"], nil, setting("quests", "hideQuestieTracker"))
 	p:Check(L["Quests in your current zone first"], nil, setting("quests", "zoneFirst"))
