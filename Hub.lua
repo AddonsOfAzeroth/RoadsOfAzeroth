@@ -2,7 +2,7 @@
 -- Each add-on carries this same file; whichever loads first builds the button,
 -- a newer copy takes over (like LibStub). Click: a list of your add-ons
 -- (click one to open it, right-click for its settings). Drag: move the button.
-local VERSION = 1
+local VERSION = 2
 
 local hub = _G.AddonsOfAzerothHub
 if type(hub) == "table" and (hub.version or 0) >= VERSION then return end
@@ -63,7 +63,8 @@ function hub:SetHidden(hide)
 	if self.button then self.button:SetShown(not hide) elseif not hide then self:Build() end
 end
 
--- e: { key, addon (folder name), title, icon, click, right, minimap = function() return db.minimap end, lang }
+-- e: { key, addon (folder name), title, icon, click, right, shift, middle,
+--      tip = function(tooltip) adds lines, minimap = function() return db.minimap end }
 function hub:Register(e)
 	for i, o in ipairs(self.entries) do if o.key == e.key then table.remove(self.entries, i) break end end
 	local meta = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
@@ -146,7 +147,7 @@ function hub:Fill()
 			r:SetHeight(ROW)
 			r:SetPoint("TOPLEFT", 4, -24 - (i - 1) * ROW)
 			r:SetPoint("TOPRIGHT", -4, -24 - (i - 1) * ROW)
-			r:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+			r:RegisterForClicks("LeftButtonUp", "RightButtonUp", "MiddleButtonUp")
 			r.hl = r:CreateTexture(nil, "BACKGROUND")
 			r.hl:SetAllPoints()
 			r.hl:SetColorTexture(0.41, 0.80, 0.94, 0.18)
@@ -162,14 +163,22 @@ function hub:Fill()
 				self.hl:Show()
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 				GameTooltip:AddLine(self.e.title)
-				GameTooltip:AddLine(text("Click: open", "Klik: openen"), 1, 1, 1)
-				if self.e.right then GameTooltip:AddLine(text("Right-click: settings", "Rechtsklik: instellingen"), 1, 1, 1) end
+				if self.e.tip then
+					pcall(self.e.tip, GameTooltip)
+				else
+					GameTooltip:AddLine(text("Click: open", "Klik: openen"), 1, 1, 1)
+					if self.e.right then GameTooltip:AddLine(text("Right-click: settings", "Rechtsklik: instellingen"), 1, 1, 1) end
+				end
 				GameTooltip:Show()
 			end)
 			r:SetScript("OnLeave", function(self) self.hl:Hide() GameTooltip:Hide() end)
 			r:SetScript("OnClick", function(self, btn)
 				f:Hide()
-				local fn = btn == "RightButton" and self.e.right or self.e.click
+				local e = self.e
+				local fn = e.click
+				if btn == "RightButton" then fn = e.right or e.click
+				elseif btn == "MiddleButton" then fn = e.middle
+				elseif IsShiftKeyDown() and e.shift then fn = e.shift end
 				if fn then pcall(fn) end
 			end)
 			f.rows[i] = r
