@@ -10,6 +10,7 @@
 ## SavedVariablesPerCharacter: RoadsOfAzerothCharDB
 ## OptionalDeps: CastersOfAzeroth, CasterKit, Questie
 
+Hub.lua
 libs\LibStub\LibStub.lua
 libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 
@@ -26,3 +27,4 @@ Map.lua
 TrailsMap.lua
 API.lua
 Config.lua
+HubEntry.lua
