@@ -1,4 +1,5 @@
 ## Interface: 16001
+## Category: Addons of Azeroth
 ## Title: Roads of Azeroth
 ## Notes: Quest tracker with a smart quest route, GPS with flight paths, a navigation arrow and the route on the world map.
 ## Notes-nlNL: Questlijst met een slimme questroute, GPS met vliegroutes, een navigatiepijl en de route op de wereldkaart.
