@@ -72,7 +72,7 @@ local function distanceText(e)
 	local yd = e and tonumber(e.cum)
 	if not yd then return "" end
 	local t = tonumber(e.cumTime)
-	local parts = { ("%d yd"):format(yd) }
+	local parts = { ("%d yd"):format(math.floor(yd + 0.5)) }
 	if t and t >= 60 then parts[#parts + 1] = L["%d min"]:format(math.floor(t / 60 + 0.5)) end
 	return "  |cff9aa3ad" .. table.concat(parts, " · ") .. "|r"
 end
