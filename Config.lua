@@ -350,6 +350,9 @@ function C:BuildMap(p)
 end
 
 function C:BuildNav(p)
+	p:Header(L["Next step"])
+	p:Check(L["Show the next step in one line"], L["One sentence about the one thing to do now: urgent things first (dead, bags full, repair, trainer), then the first stop of your route. Unlock the frames (General) to move it."], setting("next", "enabled"))
+	p:Gap()
 	p:Header(L["Navigation (GPS)"])
 	p:Check(L["Use the GPS"], L["A route of stops with a GPS panel: direction, distance, arrival time and the next stop."], setting("nav", "enabled"))
 	p:Check(L["Follow the quest route"], L["The smart quest route (objectives, then turn-ins) comes after your own stops."], setting("nav", "followQuests"))

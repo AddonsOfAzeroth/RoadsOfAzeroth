@@ -13,6 +13,7 @@ RoA.modules = {}
 -- Defaults
 ---------------------------------------------------------------------------
 local charDefaults = {
+	next = { enabled = true },  -- the next step in one line (NextStep.lua, mover "next")
 	nav = {
 		enabled = true,
 		followQuests = true, -- smart quest route (QuestPlan) after the own stops
