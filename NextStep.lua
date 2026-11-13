@@ -187,8 +187,12 @@ end
 
 function N:OnEnable()
 	self:Build()
+	-- trainers teach new ranks on even levels only (an odd level keeps an earlier pending one)
+	local old = cfg().trainLevel
+	if old and old % 2 == 1 then cfg().trainLevel = nil end
 	RoA:On("PLAYER_LEVEL_UP", function(_, level)
-		cfg().trainLevel = tonumber(Safe(level, nil)) or Safe(UnitLevel("player"), nil)
+		level = tonumber(Safe(level, nil)) or Safe(UnitLevel("player"), nil)
+		if level and level % 2 == 0 then cfg().trainLevel = level end
 		N:Update()
 	end)
 	RoA:On("TRAINER_SHOW", function() cfg().trainLevel = nil N:Update() end)
