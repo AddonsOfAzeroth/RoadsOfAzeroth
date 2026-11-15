@@ -179,15 +179,14 @@ function F:BuildPanel()
 		local r = CreateFrame("Frame", nil, f)
 		r:SetSize(234, 16)
 		r:SetPoint("TOPLEFT", 8, -28 - (i - 1) * 17)
+		-- columns are sized in ShowPanel, to the longest name, time and price
 		r.name = S:Font(r, 12)
-		r.name:SetPoint("LEFT")
-		r.name:SetPoint("RIGHT", r, "RIGHT", -96, 0)
 		r.name:SetJustifyH("LEFT")
 		r.name:SetWordWrap(false)
 		r.time = S:Font(r, 12)
-		r.time:SetPoint("RIGHT", r, "RIGHT", -52, 0)
+		r.time:SetJustifyH("RIGHT")
 		r.cost = S:Font(r, 11)
-		r.cost:SetPoint("RIGHT")
+		r.cost:SetJustifyH("RIGHT")
 		r:Hide()
 		f.rows[i] = r
 	end
@@ -209,19 +208,40 @@ function F:ShowPanel()
 	end
 	table.sort(list, function(a, b) if a.sec ~= b.sec then return a.sec < b.sec end return a.d.name < b.d.name end)
 	local n = math.min(#list, ROWS)
+	local wName, wTime, wCost = 0, 0, 0
 	for i, r in ipairs(f.rows) do
 		local e = list[i]
 		if e and i <= n then
 			r.name:SetText(e.d.name)
 			r.time:SetText(here and self:TimeText(here.nodeID, e.d.nodeID) or "?")
 			r.cost:SetText(money(e.d.cost))
+			wName = math.max(wName, r.name:GetStringWidth() or 0)
+			wTime = math.max(wTime, r.time:GetStringWidth() or 0)
+			wCost = math.max(wCost, r.cost:GetStringWidth() or 0)
 			r:Show()
 		else
 			r:Hide()
 		end
 	end
+	-- name | time | price, with room between them; long names are cut
+	wName, wTime, wCost = math.min(math.ceil(wName), 240), math.ceil(wTime) + 2, math.ceil(wCost) + 2
+	local gap = 14
+	local rowW = wName + gap + wTime + gap + wCost
+	for _, r in ipairs(f.rows) do
+		r:SetWidth(rowW)
+		r.name:ClearAllPoints()
+		r.name:SetPoint("LEFT")
+		r.name:SetWidth(wName)
+		r.time:ClearAllPoints()
+		r.time:SetPoint("LEFT", r, "LEFT", wName + gap, 0)
+		r.time:SetWidth(wTime)
+		r.cost:ClearAllPoints()
+		r.cost:SetPoint("RIGHT")
+		r.cost:SetWidth(wCost)
+	end
 	f.note:ClearAllPoints()
 	f.note:SetPoint("TOPLEFT", 8, -32 - n * 17)
+	f:SetWidth(math.max(rowW, f.note:GetStringWidth() or 0, f.title:GetStringWidth() or 0) + 16)
 	f:SetHeight(48 + n * 17)
 	local host = (FlightMapFrame and FlightMapFrame:IsShown() and FlightMapFrame) or (TaxiFrame and TaxiFrame:IsShown() and TaxiFrame)
 	f:ClearAllPoints()
