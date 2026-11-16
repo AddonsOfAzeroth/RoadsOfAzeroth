@@ -37,10 +37,11 @@ Saved in `RoadsOfAzerothDB.journal`:
 ```
 journal = { version = 1,
   chars = { [playerGUID] = { name = "Name", class = "WARLOCK", pts = { "t,m,x,y,w,wy,wx,f", ... } } },
-  maps  = { [uiMapID] = { n = name, p = parentMapID, k = mapType, w = continent, r = { y1, x1, y2, x2 } } } }
+  maps  = { [uiMapID] = { n = name, p = parentMapID, k = mapType, w = continent, r = { y1, x1, y2, x2 } } },
+  mapsDone = { build = "1.16.1.60000", count = 126 } }
 ```
 
-One point is `time(),uiMapID,x,y,continent,worldY,worldX,flags`: x and y are 0..1 with 4 decimals (empty when the map has no position, for example in some dungeons), world yards with 1 decimal in `UnitPosition` order. Flags: `t` taxi, `m` mounted, `c` combat, `d` dead or ghost, `s` swimming, `g` gap (first point after a loading screen, a teleport or a jump of more than 40 yards: do not draw a line to it). A point is saved every 2 s while you move at least 4 yards (at once after 30 yards), on every map change, when a flag changes, and once when you die. At most 60000 points per character; when full the oldest 1000 go. `maps` holds every visited map and its parents up to the continent; `r` is the world position of the map corners (0,0) and (1,1). Hidden (secret) values in combat are skipped.
+One point is `time(),uiMapID,x,y,continent,worldY,worldX,flags`: x and y are 0..1 with 4 decimals (empty when the map has no position, for example in some dungeons), world yards with 1 decimal in `UnitPosition` order. Flags: `t` taxi, `m` mounted, `c` combat, `d` dead or ghost, `s` swimming, `g` gap (first point after a loading screen, a teleport or a jump of more than 40 yards: do not draw a line to it). A point is saved every 2 s while you move at least 4 yards (at once after 30 yards), on every map change, when a flag changes, and once when you die. At most 60000 points per character; when full the oldest 1000 go. `maps` holds every zone, city and other map under Kalimdor and the Eastern Kingdoms, the continents and Azeroth (when it has a rect), filled once at login and again only when the client build or the number of maps changes (`mapsDone = { build, count }`), plus every visited map and its parents; `r` is the world position of the map corners (0,0) and (1,1). Hidden (secret) values in combat are skipped.
 
 ---
 

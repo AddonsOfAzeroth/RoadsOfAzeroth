@@ -7,7 +7,8 @@
 -- RoadsOfAzerothDB.journal = { version = 1,
 --   chars = { [playerGUID] = { name, class, pts = { "t,m,x,y,w,wy,wx,f", ... } } },
 --   maps  = { [uiMapID] = { n = name, p = parent, k = mapType, w = continent,
---                           r = { y1, x1, y2, x2 } } } }
+--                           r = { y1, x1, y2, x2 } } },
+--   mapsDone = { build, count } } -- all zones filled for this client build
 -- t = time(), m = uiMapID, x/y = map position 0..1 (empty when the map has none),
 -- w = continent or instance id, wy/wx = world yards (UnitPosition order),
 -- f = flags: t taxi, m mounted, c combat, d dead or ghost, s swimming,
@@ -149,32 +150,139 @@ local function readPos()
 end
 
 ---------------------------------------------------------------------------
--- Maps: name, parent, type and world corners, for every map visited
+-- Maps: name, parent, type and world corners
 ---------------------------------------------------------------------------
 local CONTINENT = Enum and Enum.UIMapType and Enum.UIMapType.Continent or 2
+local ROOTS = { 1414, 1415 } -- Kalimdor, Eastern Kingdoms
+local AZEROTH = 947
+local MAX_MAPS = 400   -- guard for the walk over all zones
+local PER_FRAME = 50   -- maps converted per frame
 
+-- One map entry from C_Map.GetMapInfo (or a children-info table), or nil.
+local function mapEntry(mapID, info)
+	if not info then
+		local ok, i = pcall(C_Map.GetMapInfo, mapID)
+		if not ok or type(i) ~= "table" then return end
+		info = i
+	end
+	local e = {
+		n = type(info.name) == "string" and not IsSecret(info.name) and info.name or nil,
+		p = num(info.parentMapID),
+		k = num(info.mapType),
+	}
+	local w1, y1, x1 = worldPos(mapID, 0, 0)
+	local w2, y2, x2 = worldPos(mapID, 1, 1)
+	if w1 and w2 and w1 == w2 then
+		e.w = w1
+		e.r = { round1(y1), round1(x1), round1(y2), round1(x2) }
+	end
+	return e
+end
+
+-- A visited map and its parents up to the continent.
 local function noteMap(mapID)
 	if not (C_Map and C_Map.GetMapInfo) then return end
 	local maps = store().maps
 	for _ = 1, MAX_PARENTS do
 		if not mapID or mapID <= 0 or maps[mapID] then return end
-		local ok, info = pcall(C_Map.GetMapInfo, mapID)
-		if not ok or type(info) ~= "table" then return end
-		local e = {
-			n = type(info.name) == "string" and not IsSecret(info.name) and info.name or nil,
-			p = num(info.parentMapID),
-			k = num(info.mapType),
-		}
-		local w1, y1, x1 = worldPos(mapID, 0, 0)
-		local w2, y2, x2 = worldPos(mapID, 1, 1)
-		if w1 and w2 and w1 == w2 then
-			e.w = w1
-			e.r = { round1(y1), round1(x1), round1(y2), round1(x2) }
-		end
+		local e = mapEntry(mapID)
+		if not e then return end
 		maps[mapID] = e
 		if e.k and e.k <= CONTINENT then return end -- continent reached
 		mapID = e.p
 	end
+end
+
+-- Every zone, city and other map under Kalimdor and the Eastern Kingdoms,
+-- the continents themselves and Azeroth: a list of map ids (at most MAX_MAPS).
+local function allMaps()
+	local list, seen = {}, {}
+	local function add(id)
+		id = num(id)
+		if not id or id <= 0 or seen[id] or #list >= MAX_MAPS then return false end
+		seen[id] = true
+		list[#list + 1] = id
+		return true
+	end
+	local function children(id, all)
+		local ok, kids
+		if all then ok, kids = pcall(C_Map.GetMapChildrenInfo, id, nil, true)
+		else ok, kids = pcall(C_Map.GetMapChildrenInfo, id) end
+		if ok and type(kids) == "table" then return kids end
+	end
+	-- fallback: one level at a time
+	local function walk(id, depth)
+		if depth > 6 then return end
+		local kids = children(id, false)
+		if not kids then return end
+		for _, k in ipairs(kids) do
+			if type(k) == "table" and add(k.mapID) then walk(k.mapID, depth + 1) end
+		end
+	end
+	add(AZEROTH)
+	for _, root in ipairs(ROOTS) do
+		if add(root) then
+			-- "all descendants" worked when some child sits deeper than the root;
+			-- older clients ignore the flag and give one level only
+			local kids = children(root, true)
+			local deep = false
+			for _, k in ipairs(kids or {}) do
+				if type(k) == "table" and num(k.parentMapID) and k.parentMapID ~= root then deep = true break end
+			end
+			if deep then
+				for _, k in ipairs(kids) do
+					if type(k) == "table" then add(k.mapID) end
+				end
+			else
+				walk(root, 1)
+			end
+		end
+	end
+	return list
+end
+
+local function buildID()
+	if not GetBuildInfo then return "?" end
+	local ok, version, build = pcall(GetBuildInfo)
+	if not ok then return "?" end
+	return tostring(version) .. "." .. tostring(build)
+end
+
+local prefilled = false -- once per session
+
+-- Fill journal.maps for all zones, so a site can draw every outline at once.
+-- Redone only when the client build or the number of maps changes.
+local function prefillMaps()
+	if prefilled or not enabled() then return end
+	if not (C_Map and C_Map.GetMapInfo and C_Map.GetMapChildrenInfo) then return end
+	prefilled = true
+	local list = allMaps()
+	local j = store()
+	local build = buildID()
+	local done = j.mapsDone
+	if type(done) == "table" and done.build == build and done.count == #list then return end
+	local maps = j.maps
+	local i = 1
+	local function work()
+		local stop = math.min(i + PER_FRAME - 1, #list)
+		for k = i, stop do
+			local id = list[k]
+			local e = mapEntry(id)
+			if e and (id ~= AZEROTH or e.r) then maps[id] = e end -- Azeroth only with a rect
+		end
+		i = stop + 1
+		if i <= #list then
+			if C_Timer and C_Timer.After then C_Timer.After(0, function() pcall(work) end) else return work() end
+		else
+			j.mapsDone = { build = build, count = #list }
+		end
+	end
+	work()
+end
+
+local function safePrefill()
+	local ok, err = pcall(prefillMaps)
+	if not ok and RoA.debug then RoA:Print("journal maps: " .. tostring(err)) end
 end
 
 ---------------------------------------------------------------------------
@@ -257,7 +365,10 @@ function J:OnEnable()
 		wait = TICK
 		safeSample()
 	end)
-	RoA:On("PLAYER_ENTERING_WORLD", function() gap = true end)
+	RoA:On("PLAYER_ENTERING_WORLD", function()
+		gap = true
+		safePrefill()
+	end)
 	RoA:On("PLAYER_DEAD", function()
 		forced = true
 		safeSample()
