@@ -54,6 +54,7 @@ local charDefaults = {
 		pickup = true,      -- "Pick up nearby" under the quest list (Pickup.lua)
 		pickupOpen = false, -- folded open or not
 	},
+	journal = { enabled = true }, -- travel journal per character (Journal.lua, account data)
 	map = {
 		enabled = true, -- route on the world map
 		route = true,

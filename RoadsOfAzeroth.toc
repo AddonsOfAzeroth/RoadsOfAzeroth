@@ -19,6 +19,7 @@ Locale.lua
 Style.lua
 Arrow.lua
 Trails.lua
+Journal.lua
 QuestPlan.lua
 Nav.lua
 Quests.lua

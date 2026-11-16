@@ -68,6 +68,8 @@ add({
 	["Learned paths cleared."] = "Geleerde paden gewist.",
 	["Learned paths"] = "Geleerde paden",
 	["Learn paths and follow them"] = "Paden leren en volgen",
+	["Keep a travel journal"] = "Reisdagboek bijhouden",
+	["Logs where this character goes (every few seconds while moving, on every zone change and when you mount, fly, fight or die), for the Roads page on your own website. Saved in RoadsOfAzerothDB; nothing is sent anywhere."] = "Houdt bij waar dit personage gaat (om de paar seconden als je beweegt, bij elke zonewissel en als je opstijgt, vliegt, vecht of sterft), voor de Roads-pagina op je eigen website. Opgeslagen in RoadsOfAzerothDB; er wordt niets verstuurd.",
 	["Remembers where you walk (all your characters). The arrow then follows those paths when that is shorter than going straight over unknown ground."] = "Onthoudt waar je loopt (al je personages). De pijl volgt die paden als dat korter is dan rechtdoor over onbekend terrein.",
 	["Forget learned paths"] = "Geleerde paden vergeten",
 	["Ctrl-click a quest title or a spot on the world map to add a stop. WoW gives addons no data for hills, walls or water: without learned paths the arrow points in a straight line."] = "Ctrl-klik op een questtitel of een plek op de wereldkaart om een stop toe te voegen. WoW geeft addons geen gegevens over heuvels, muren of water: zonder geleerde paden wijst de pijl in een rechte lijn.",

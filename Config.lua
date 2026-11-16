@@ -380,6 +380,7 @@ function C:BuildNav(p)
 		if RoA.Trails then RoA.Trails:Clear() end
 		RoA:Print(L["Learned paths cleared."])
 	end)
+	p:Check(L["Keep a travel journal"], L["Logs where this character goes (every few seconds while moving, on every zone change and when you mount, fly, fight or die), for the Roads page on your own website. Saved in RoadsOfAzerothDB; nothing is sent anywhere."], setting("journal", "enabled"))
 	p:Note(L["Ctrl-click a quest title or a spot on the world map to add a stop. WoW gives addons no data for hills, walls or water: without learned paths the arrow points in a straight line."])
 end
 
